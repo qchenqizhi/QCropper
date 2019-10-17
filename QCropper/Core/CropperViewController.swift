@@ -37,7 +37,7 @@ class CropperViewController: UIViewController {
         self.originalImage = originalImage
         self.initialState = initialState
         super.init(nibName: nil, bundle: nil)
-        self.modalPresentationStyle = .fullScreen
+        modalPresentationStyle = .fullScreen
     }
 
     required init?(coder _: NSCoder) {
@@ -48,7 +48,7 @@ class CropperViewController: UIViewController {
 
     // if self not init with a state, return false
     public var isCurrentlyInInitialState: Bool {
-        self.isCurrentlyInState(initialState)
+        isCurrentlyInState(initialState)
     }
 
     public var aspectRatioLocked: Bool = false {
@@ -85,7 +85,7 @@ class CropperViewController: UIViewController {
     private var stasisThings: (() -> Void)?
 
     private var isCurrentlyInDefalutState: Bool {
-        self.isCurrentlyInState(defaultCropperState)
+        isCurrentlyInState(defaultCropperState)
     }
 
     private var totalAngle: CGFloat {
@@ -180,7 +180,7 @@ class CropperViewController: UIViewController {
             }))
         }
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        self.present(alert, animated: true, completion: nil)
+        present(alert, animated: true, completion: nil)
     }
 
     private lazy var aspectRatioPicker: UIView = UIView()
@@ -188,27 +188,20 @@ class CropperViewController: UIViewController {
     private lazy var overlay: Overlay = Overlay(frame: self.view.bounds)
 
     private var hasSetAspectRatioAfterLayout: Bool = false
-    private lazy var slider: UISlider = {
-        let slider = UISlider(frame: CGRect(x: 30, y: 30, width: 276, height: 60))
-        slider.backgroundColor = .clear
-
-        slider.minimumValue = -45.0
-        slider.maximumValue = 45.0
-        slider.value = 0.0
-
-        slider.addTarget(self, action: #selector(sliderValueChanged(_:)), for: .valueChanged)
-        slider.addTarget(self, action: #selector(sliderTouchEnded(_:)), for: [.touchUpInside, .touchUpOutside, .touchCancel])
-        slider.value = 0
-        return slider
+    lazy var angleRuler: AngleRuler = {
+        let ar = AngleRuler(frame: CGRect(x: 0, y: 0, width: view.width, height: 70))
+        ar.addTarget(self, action: #selector(angleRulerValueChanged(_:)), for: .valueChanged)
+        ar.addTarget(self, action: #selector(angleRulerTouchEnded(_:)), for: [.editingDidEnd])
+        return ar
     }()
 
     @objc
-    func sliderValueChanged(_: AnyObject) {
-        setStraightenAngle(CGFloat(slider.value * Float.pi / 180.0))
+    func angleRulerValueChanged(_: AnyObject) {
+        setStraightenAngle(CGFloat(angleRuler.value * CGFloat.pi / 180.0))
     }
 
     @objc
-    func sliderTouchEnded(_: AnyObject) {
+    func angleRulerTouchEnded(_: AnyObject) {
         UIView.animate(withDuration: 0.25, animations: {
             self.overlay.gridLinesAlpha = 0
             self.overlay.blur = true
@@ -254,7 +247,7 @@ class CropperViewController: UIViewController {
         backgroundView.addSubview(scrollViewContainer)
         backgroundView.addSubview(overlay)
         bottomView.addSubview(aspectRatioPicker)
-        bottomView.addSubview(slider)
+        bottomView.addSubview(angleRuler)
         bottomView.addSubview(toolbar)
 
         view.addSubview(backgroundView)
@@ -303,7 +296,7 @@ class CropperViewController: UIViewController {
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
-        self.needReload = true
+        needReload = true
     }
 
     // MARK: - User Interaction
@@ -354,7 +347,7 @@ class CropperViewController: UIViewController {
         overlay.blur = false
         overlay.gridLinesAlpha = 0
         overlay.cropBoxAlpha = 0
-        self.topBar.isUserInteractionEnabled = false
+        topBar.isUserInteractionEnabled = false
         bottomView.isUserInteractionEnabled = false
 
         UIView.animate(withDuration: 0.25, animations: {
@@ -437,7 +430,7 @@ extension CropperViewController {
             self.currentAspectRatio = state.currentAspectRatio
             //            self.aspectRatioPicker.currentAspectRatio =
             self.currentAspectRatioValue = state.currentAspectRatioValue
-            self.slider.value = Float(state.straightenAngle * 180 / CGFloat.pi)
+            self.angleRuler.value = state.straightenAngle * 180 / CGFloat.pi
             // No need restore
             //            self.photoTranslation() = state.photoTranslation
             //            self.imageView.transform = state.imageViewTransform
@@ -485,13 +478,13 @@ extension CropperViewController {
         }
 
         scrollView.contentOffset = safeContentOffsetForScrollView(newContentOffset)
-        self.toolbar.resetButton.isHidden = self.isCurrentlyInDefalutState
+        toolbar.resetButton.isHidden = isCurrentlyInDefalutState
     }
 
     public func setAspectRatioValue(_ aspectRatioValue: CGFloat) {
         guard aspectRatioValue > 0 else { return }
 
-        self.topBar.isUserInteractionEnabled = false
+        topBar.isUserInteractionEnabled = false
         bottomView.isUserInteractionEnabled = false
         aspectRatioLocked = true
         currentAspectRatioValue = aspectRatioValue
@@ -528,7 +521,7 @@ extension CropperViewController {
     }
 
     public func rotate90degrees(clockwise: Bool = true) {
-        self.topBar.isUserInteractionEnabled = false
+        topBar.isUserInteractionEnabled = false
         bottomView.isUserInteractionEnabled = false
 
         // Make sure to cover the entire screen while rotating
@@ -598,7 +591,7 @@ extension CropperViewController {
             self.scrollView.contentOffset = self.safeContentOffsetForScrollView(newContentOffset)
             self.scrollView.center = scrollViewCenter
         }, completion: { _ in
-            self.allowedAspectRatios = self.allowedAspectRatios.map({ $0.rotated })
+            self.allowedAspectRatios = self.allowedAspectRatios.map { $0.rotated }
             self.currentAspectRatio = self.currentAspectRatio.rotated
             if self.aspectRatioLocked {
                 self.currentAspectRatioValue = 1 / self.currentAspectRatioValue
@@ -660,10 +653,10 @@ private extension CropperViewController {
 
         topBar.frame = CGRect(x: 0, y: 0, width: view.width, height: view.safeAreaInsets.top + barHeight)
         toolbar.size = CGSize(width: view.width, height: view.safeAreaInsets.bottom + barHeight)
-        bottomView.size = CGSize(width: view.width, height: toolbar.height + slider.height)
+        bottomView.size = CGSize(width: view.width, height: toolbar.height + angleRuler.height + margin)
         bottomView.bottom = view.height
         toolbar.bottom = bottomView.height
-        slider.bottom = toolbar.top
+        angleRuler.bottom = toolbar.top - margin
 
         cropRegionInsets = UIEdgeInsets(top: margin + topBar.height,
                                         left: margin + view.safeAreaInsets.left,
@@ -694,7 +687,7 @@ private extension CropperViewController {
         scrollView.bounds = CGRect(x: 0, y: 0, width: defaultCropBoxSize.width, height: defaultCropBoxSize.height)
         scrollView.contentSize = defaultCropBoxSize
         scrollView.contentOffset = .zero
-        scrollView.center = self.backgroundView.convert(defaultCropBoxCenter, to: scrollViewContainer)
+        scrollView.center = backgroundView.convert(defaultCropBoxCenter, to: scrollViewContainer)
         imageView.transform = .identity
         imageView.frame = scrollView.bounds
         aspectRatioPicker.frame = CGRect(x: 0, y: 0, width: view.width, height: 76)
@@ -704,7 +697,6 @@ private extension CropperViewController {
         straightenAngle = 0
         rotationAngle = 0
         flipAngle = 0
-        slider.value = 0
 //        aspectRatioPicker.currentAspectRatio = .freeForm
         aspectRatioLocked = false
         currentAspectRatioValue = 1
@@ -719,7 +711,8 @@ private extension CropperViewController {
 
         defaultCropperState = saveState()
 
-        self.toolbar.resetButton.isHidden = true
+        angleRuler.value = 0
+        toolbar.resetButton.isHidden = true
     }
 
     // Make angle in 0 - 360 degrees
@@ -742,7 +735,7 @@ private extension CropperViewController {
         var angle = angle
         angle = standardizeAngle(angle)
 
-        let deviation: CGFloat = 0.06
+        let deviation: CGFloat = 0.017444444 // 1 * 3.14 / 180, sync with AngleRuler
         if abs(angle - 0) < deviation {
             angle = 0
         } else if abs(angle - CGFloat.pi / 2.0) < deviation {
@@ -885,7 +878,7 @@ private extension CropperViewController {
             self.scrollView.zoomScale = zoomScale
 
             let contentOffset = CGPoint(x: normalizedCenter.x * self.imageView.width - self.scrollView.bounds.size.width * 0.5,
-                                                 y: normalizedCenter.y * self.imageView.height - self.scrollView.bounds.size.height * 0.5)
+                                        y: normalizedCenter.y * self.imageView.height - self.scrollView.bounds.size.height * 0.5)
             self.scrollView.contentOffset = self.safeContentOffsetForScrollView(contentOffset)
         }, completion: { _ in
             completion?()
@@ -967,10 +960,7 @@ private extension CropperViewController {
             state.cropBoxFrame.isEqual(to: overlay.cropBoxFrame, accuracy: epsilon),
             state.aspectRatioLocked == aspectRatioLocked,
             state.currentAspectRatio == currentAspectRatio,
-            state.currentAspectRatioValue.isEqual(to: currentAspectRatioValue, accuracy: epsilon)/*,
-            state.photoTranslation.isEqual(to: photoTranslation(), accuracy: epsilon),
-            state.imageViewTransform.isEqual(to: imageView.transform, accuracy: epsilon),
-            state.imageViewBoundsSize.isEqual(to: imageView.bounds.size, accuracy: epsilon)*/ {
+            state.currentAspectRatioValue.isEqual(to: currentAspectRatioValue, accuracy: epsilon) {
             return true
         }
 
@@ -1224,7 +1214,7 @@ extension CropperViewController: UIScrollViewDelegate {
         cancelStasis()
         overlay.blur = false
         overlay.gridLinesAlpha = 1
-        self.topBar.isUserInteractionEnabled = false
+        topBar.isUserInteractionEnabled = false
         bottomView.isUserInteractionEnabled = false
     }
 
@@ -1249,7 +1239,7 @@ extension CropperViewController: UIScrollViewDelegate {
         cancelStasis()
         overlay.blur = false
         overlay.gridLinesAlpha = 1
-        self.topBar.isUserInteractionEnabled = false
+        topBar.isUserInteractionEnabled = false
         bottomView.isUserInteractionEnabled = false
     }
 
@@ -1313,19 +1303,19 @@ extension CropperViewController: UIGestureRecognizerDelegate {
 
 extension CropperViewController {
     func setAspectRatio(_ aspectRatio: AspectRatio) {
-        self.currentAspectRatio = aspectRatio
+        currentAspectRatio = aspectRatio
         switch aspectRatio {
         case .original:
-            self.setAspectRatioValue(originalImage.size.width / originalImage.size.height)
-            self.aspectRatioLocked = true
+            setAspectRatioValue(originalImage.size.width / originalImage.size.height)
+            aspectRatioLocked = true
         case .freeForm:
-            self.aspectRatioLocked = false
+            aspectRatioLocked = false
         case .square:
-            self.setAspectRatioValue(1)
-            self.aspectRatioLocked = true
+            setAspectRatioValue(1)
+            aspectRatioLocked = true
         case let .ratio(width, height):
-            self.setAspectRatioValue(CGFloat(width) / CGFloat(height))
-            self.aspectRatioLocked = true
+            setAspectRatioValue(CGFloat(width) / CGFloat(height))
+            aspectRatioLocked = true
         }
     }
 }
