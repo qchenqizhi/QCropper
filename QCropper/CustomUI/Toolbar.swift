@@ -16,6 +16,7 @@ class Toolbar: UIView {
 
     lazy var resetButton: UIButton = {
         let button = self.titleButton("RESET", highlight: true)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 14)
         button.isHidden = true
         button.centerX = self.width / 2
         button.autoresizingMask = [.flexibleBottomMargin, .flexibleRightMargin]
@@ -48,7 +49,7 @@ class Toolbar: UIView {
         addSubview(doneButton)
     }
 
-    required init?(coder: NSCoder) {
+    required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
@@ -71,4 +72,3 @@ class Toolbar: UIView {
         return button
     }
 }
-

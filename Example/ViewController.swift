@@ -43,27 +43,27 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     }
 
     @objc
-    func startButtonPressed(_ sender: UIButton) {
+    func startButtonPressed(_: UIButton) {
         let picker = UIImagePickerController()
         picker.sourceType = .photoLibrary
         picker.allowsEditing = false
         picker.delegate = self
-        self.present(picker, animated: true, completion: nil)
+        present(picker, animated: true, completion: nil)
     }
 
     @objc
-    func reeditButtonPressed(_ sender: UIButton) {
+    func reeditButtonPressed(_: UIButton) {
         if let image = originalImage, let state = cropperState {
             let cropper = CropperViewController(originalImage: image, initialState: state)
             cropper.delegate = self
-            self.present(cropper, animated: true, completion: nil)
+            present(cropper, animated: true, completion: nil)
         }
     }
 
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
         guard let image = (info[.originalImage] as? UIImage) else { return }
 
-        self.originalImage = image
+        originalImage = image
 
         let cropper = CropperViewController(originalImage: image)
         cropper.delegate = self
@@ -80,8 +80,7 @@ extension ViewController: CropperViewControllerDelegate {
 
         if let state = state,
             let image = cropper.originalImage.cropped(withCropperState: state) {
-
-            self.cropperState = state
+            cropperState = state
             imageView.image = image
             print(cropper.isCurrentlyInInitialState)
             print(image)

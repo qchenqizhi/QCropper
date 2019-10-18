@@ -15,15 +15,34 @@ class AngleRuler: UIControl {
 
     var minimumValue: CGFloat = -45
     var maximumValue: CGFloat = 45
-    var _value: CGFloat = 0
+    var _value: CGFloat = 0 {
+        didSet {
+            if abs(_value) < 0.01 {
+                zeroDot.isHidden = true
+            } else {
+                zeroDot.isHidden = false
+            }
+        }
+    }
     var value: CGFloat {
         get {
             return _value
         }
         set {
-            _value = newValue
-            let x = CGFloat(numberOfTotalScales) * scaleSpacing * (newValue - minimumValue) / (maximumValue - minimumValue)
+            setValue(newValue, sendEvent: false)
+        }
+    }
+
+    func setValue(_ newValue: CGFloat, sendEvent: Bool) {
+        _value = newValue
+        valueLabel.text = String(format: "%0.f", newValue)
+        let x = CGFloat(numberOfTotalScales) * scaleSpacing * (newValue - minimumValue) / (maximumValue - minimumValue)
+        if sendEvent {
             scrollView.contentOffset = CGPoint(x: x, y: 0)
+        } else {
+            scrollView.delegate = nil
+            scrollView.contentOffset = CGPoint(x: x, y: 0)
+            scrollView.delegate = self
         }
     }
 
@@ -38,6 +57,7 @@ class AngleRuler: UIControl {
     private lazy var scrollView: UIScrollView = {
         let sv = UIScrollView(frame: self.bounds.insetBy(dx: margin, dy: 0))
         sv.backgroundColor = .clear
+        sv.decelerationRate = .fast
         sv.showsHorizontalScrollIndicator = false
         sv.showsVerticalScrollIndicator = false
         sv.delegate = self
@@ -65,6 +85,15 @@ class AngleRuler: UIControl {
         let view = UIView(frame: CGRect(x: 0, y: 0, width: 1 + 2 * borderWidth, height: 30 + 2 * borderWidth))
         view.backgroundColor = UIColor(white: 0, alpha: 0.2)
         view.center = self.midScaleLine.center
+        return view
+    }()
+
+    private lazy var zeroDot: UIView = {
+        let x = (CGFloat(numberOfTotalScales) / 2) * scaleSpacing + pixelOffset + scrollViewContentInset - 3
+        let view = UIView(frame: CGRect(x: x, y: frame.size.height - bottomMargin - 29, width: 6, height: 6))
+        view.layer.cornerRadius = 3
+        view.layer.masksToBounds = true
+        view.backgroundColor = .white
         return view
     }()
 
@@ -144,13 +173,14 @@ class AngleRuler: UIControl {
         backgroundColor = .clear
 
         setupScaleLayers()
+        scrollView.addSubview(zeroDot)
         addSubview(scrollView)
         addSubview(midScaleLineBorder)
         addSubview(midScaleLine)
         addSubview(valueLabel)
         layer.mask = maskLayer
 
-        value = 0
+        setValue(0, sendEvent: false)
     }
 
     override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
@@ -170,7 +200,7 @@ class AngleRuler: UIControl {
     private func autoZeroValue() {
         if abs(value) < 1 {
             UIView.animate(withDuration: 0.15) {
-                self.value = 0
+                self.setValue(0, sendEvent: true)
             }
         }
     }
@@ -201,6 +231,10 @@ extension AngleRuler: UIScrollViewDelegate {
         if !decelerate {
             scrollEnded()
         }
+    }
+
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        scrollEnded()
     }
 
     func scrollViewDidEndScrollingAnimation(_: UIScrollView) {

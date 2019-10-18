@@ -58,7 +58,7 @@ extension AspectRatio: Codable {
             if numberStrings.count == 2,
                 let width = Int(numberStrings[0]),
                 let height = Int(numberStrings[1]) {
-                    self = .ratio(width: width, height: height)
+                self = .ratio(width: width, height: height)
             } else {
                 self = .freeForm
             }
@@ -67,7 +67,7 @@ extension AspectRatio: Codable {
 
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(self.description, forKey: .description)
+        try container.encode(description, forKey: .description)
     }
 }
 

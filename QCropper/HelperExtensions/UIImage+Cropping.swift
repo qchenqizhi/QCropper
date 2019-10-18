@@ -85,7 +85,7 @@ extension UIImage {
                                     bytesPerRow: 0,
                                     space: colorSpace,
                                     bitmapInfo: CGImageAlphaInfo.noneSkipFirst.rawValue) else {
-                                        return nil
+            return nil
         }
         var srcSize = size
         var rotation: CGFloat = 0.0
@@ -143,7 +143,7 @@ extension UIImage {
                                     bytesPerRow: 0,
                                     space: colorSpace,
                                     bitmapInfo: source.bitmapInfo.rawValue) else {
-                                        return nil
+            return nil
         }
 
         context.setFillColor(UIColor.black.cgColor)

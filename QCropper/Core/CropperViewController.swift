@@ -134,6 +134,7 @@ class CropperViewController: UIViewController {
 
     private lazy var backgroundView: UIView = {
         let view = UIView(frame: self.view.bounds)
+        view.backgroundColor = UIColor(white: 0.06, alpha: 1)
         return view
     }()
 
@@ -197,6 +198,9 @@ class CropperViewController: UIViewController {
 
     @objc
     func angleRulerValueChanged(_: AnyObject) {
+        toolbar.isUserInteractionEnabled = false
+        topBar.isUserInteractionEnabled = false
+        scrollViewContainer.isUserInteractionEnabled = false
         setStraightenAngle(CGFloat(angleRuler.value * CGFloat.pi / 180.0))
     }
 
@@ -206,6 +210,9 @@ class CropperViewController: UIViewController {
             self.overlay.gridLinesAlpha = 0
             self.overlay.blur = true
         }, completion: { _ in
+            self.toolbar.isUserInteractionEnabled = true
+            self.topBar.isUserInteractionEnabled = true
+            self.scrollViewContainer.isUserInteractionEnabled = true
             self.overlay.gridLinesCount = 2
         })
     }
@@ -229,7 +236,6 @@ class CropperViewController: UIViewController {
         }
 
         view.backgroundColor = .clear
-        backgroundView.backgroundColor = UIColor(white: 0.06, alpha: 1)
 
         scrollView.addSubview(imageView)
 
@@ -408,7 +414,7 @@ extension CropperViewController {
     }
 
     public func restoreState(_ state: CropperState, animated: Bool = false) {
-        guard view.frame.equalTo(state.viewFrame) else { // 旋转了，分屏了之类的，不支持
+        guard view.frame.equalTo(state.viewFrame) else {
             return
         }
 

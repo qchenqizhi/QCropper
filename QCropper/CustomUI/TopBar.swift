@@ -47,7 +47,7 @@ class TopBar: UIView {
         addSubview(aspectRationButton)
     }
 
-    required init?(coder: NSCoder) {
+    required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
@@ -58,7 +58,7 @@ class TopBar: UIView {
             button.setImage(UIImage(systemNameOrColorIfNotAvailable: iconName)?.withTintColor(highlightColor), for: .selected)
         }
         button.tintColor = UIColor(white: 0.725, alpha: 1)
-        button.bottom = self.height
+        button.bottom = height
         return button
     }
 }
