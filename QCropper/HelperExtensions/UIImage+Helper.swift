@@ -32,7 +32,7 @@ extension UIImage {
         if #available(iOS 13.0, *) {
             self.init(systemName: name, withConfiguration: UIImage.SymbolConfiguration(pointSize: 20))
         } else {
-            // TODO: SP.png resource
+            // TODO: png resource
             self.init(color: .white, size: CGSize(width: 20, height: 20))
         }
     }

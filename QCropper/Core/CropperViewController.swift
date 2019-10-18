@@ -18,18 +18,18 @@ enum CropBoxEdge: Int {
     case bottomLeft
 }
 
-protocol CropperViewControllerDelegate: class {
+public protocol CropperViewControllerDelegate: class {
     func cropperDidConfirm(_ cropper: CropperViewController, state: CropperState?)
     func cropperDidCancel(_ cropper: CropperViewController)
 }
 
-extension CropperViewControllerDelegate {
+public extension CropperViewControllerDelegate {
     func cropperDidCancel(_ cropper: CropperViewController) {
         cropper.dismiss(animated: true, completion: nil)
     }
 }
 
-class CropperViewController: UIViewController {
+public class CropperViewController: UIViewController, Rotatable, StateRestorable, Flipable {
     let originalImage: UIImage
     var initialState: CropperState?
 
@@ -60,41 +60,41 @@ class CropperViewController: UIViewController {
     public var currentAspectRatio: AspectRatio = .freeForm
     public var currentAspectRatioValue: CGFloat = 1.0
 
-    private let cropBoxHotArea: CGFloat = 50
-    private let cropBoxMinSize: CGFloat = 20
-    private let barHeight: CGFloat = 44
+    let cropBoxHotArea: CGFloat = 50
+    let cropBoxMinSize: CGFloat = 20
+    let barHeight: CGFloat = 44
 
-    private var cropRegionInsets: UIEdgeInsets = .zero
-    private var maxCropRegion: CGRect = .zero
-    private var defaultCropBoxCenter: CGPoint = .zero
-    private var defaultCropBoxSize: CGSize = .zero
+    var cropRegionInsets: UIEdgeInsets = .zero
+    var maxCropRegion: CGRect = .zero
+    var defaultCropBoxCenter: CGPoint = .zero
+    var defaultCropBoxSize: CGSize = .zero
 
-    private var straightenAngle: CGFloat = 0.0
-    private var rotationAngle: CGFloat = 0.0
-    private var flipAngle: CGFloat = 0.0
+    var straightenAngle: CGFloat = 0.0
+    var rotationAngle: CGFloat = 0.0
+    var flipAngle: CGFloat = 0.0
 
-    private var panBeginningPoint: CGPoint = .zero
-    private var panBeginningCropBoxEdge: CropBoxEdge = .none
-    private var panBeginningCropBoxFrame: CGRect = .zero
+    var panBeginningPoint: CGPoint = .zero
+    var panBeginningCropBoxEdge: CropBoxEdge = .none
+    var panBeginningCropBoxFrame: CGRect = .zero
 
-    private var manualZoomed: Bool = false
+    var manualZoomed: Bool = false
 
-    private var needReload: Bool = false
-    private var defaultCropperState: CropperState?
-    private var stasisTimer: Timer?
-    private var stasisThings: (() -> Void)?
+    var needReload: Bool = false
+    var defaultCropperState: CropperState?
+    var stasisTimer: Timer?
+    var stasisThings: (() -> Void)?
 
-    private var isCurrentlyInDefalutState: Bool {
+    var isCurrentlyInDefalutState: Bool {
         isCurrentlyInState(defaultCropperState)
     }
 
-    private var totalAngle: CGFloat {
+    var totalAngle: CGFloat {
         return autoHorizontalOrVerticalAngle(straightenAngle + rotationAngle + flipAngle)
     }
 
-    private lazy var scrollViewContainer: ScrollViewContainer = ScrollViewContainer(frame: self.view.bounds)
+    lazy var scrollViewContainer: ScrollViewContainer = ScrollViewContainer(frame: self.view.bounds)
 
-    private lazy var scrollView: UIScrollView = {
+    lazy var scrollView: UIScrollView = {
         let sv = UIScrollView(frame: CGRect(x: 0, y: 0, width: self.defaultCropBoxSize.width, height: self.defaultCropBoxSize.height))
         sv.delegate = self
         sv.center = self.backgroundView.convert(defaultCropBoxCenter, to: scrollViewContainer)
@@ -118,13 +118,13 @@ class CropperViewController: UIViewController {
         return sv
     }()
 
-    private lazy var imageView: UIImageView = {
+    lazy var imageView: UIImageView = {
         let iv = UIImageView(image: self.originalImage)
         iv.backgroundColor = .clear
         return iv
     }()
 
-    private lazy var cropBoxPanGesture: UIPanGestureRecognizer = {
+    lazy var cropBoxPanGesture: UIPanGestureRecognizer = {
         let pan = UIPanGestureRecognizer(target: self, action: #selector(cropBoxPan(_:)))
         pan.delegate = self
         return pan
@@ -132,19 +132,19 @@ class CropperViewController: UIViewController {
 
     // MARK: Custom UI
 
-    private lazy var backgroundView: UIView = {
+    lazy var backgroundView: UIView = {
         let view = UIView(frame: self.view.bounds)
         view.backgroundColor = UIColor(white: 0.06, alpha: 1)
         return view
     }()
 
-    private lazy var bottomView: UIView = {
+    lazy var bottomView: UIView = {
         let view = UIView(frame: CGRect(x: 0, y: self.view.height - 100, width: self.view.width, height: 100))
         view.autoresizingMask = [.flexibleTopMargin, .flexibleBottomMargin, .flexibleLeftMargin, .flexibleRightMargin, .flexibleWidth]
         return view
     }()
 
-    private lazy var topBar: TopBar = {
+    lazy var topBar: TopBar = {
         let topBar = TopBar(frame: CGRect(x: 0, y: 0, width: self.view.width, height: self.view.safeAreaInsets.top + barHeight))
         topBar.flipButton.addTarget(self, action: #selector(flipButtonPressed(_:)), for: .touchUpInside)
         topBar.rotateButton.addTarget(self, action: #selector(rotateButtonPressed(_:)), for: .touchUpInside)
@@ -152,7 +152,7 @@ class CropperViewController: UIViewController {
         return topBar
     }()
 
-    private lazy var toolbar: Toolbar = {
+    lazy var toolbar: Toolbar = {
         let toolbar = Toolbar(frame: CGRect(x: 0, y: 0, width: self.view.width, height: view.safeAreaInsets.bottom + barHeight))
         toolbar.doneButton.addTarget(self, action: #selector(confirmButtonPressed(_:)), for: .touchUpInside)
         toolbar.cancelButton.addTarget(self, action: #selector(cancelButtonPressed(_:)), for: .touchUpInside)
@@ -161,7 +161,7 @@ class CropperViewController: UIViewController {
         return toolbar
     }()
 
-    private var allowedAspectRatios: [AspectRatio] = [
+    var allowedAspectRatios: [AspectRatio] = [
         .original,
         .freeForm,
         .square,
@@ -173,7 +173,7 @@ class CropperViewController: UIViewController {
         .ratio(width: 2, height: 3)
     ]
 
-    private func showAspectRatioPicker() {
+    func showAspectRatioPicker() {
         let alert = UIAlertController(title: "Select aspect ratio", message: nil, preferredStyle: .actionSheet)
         for ar in allowedAspectRatios {
             alert.addAction(UIAlertAction(title: ar.description, style: .default, handler: { _ in
@@ -184,11 +184,11 @@ class CropperViewController: UIViewController {
         present(alert, animated: true, completion: nil)
     }
 
-    private lazy var aspectRatioPicker: UIView = UIView()
+    lazy var aspectRatioPicker: UIView = UIView()
 
-    private lazy var overlay: Overlay = Overlay(frame: self.view.bounds)
+    lazy var overlay: Overlay = Overlay(frame: self.view.bounds)
 
-    private var hasSetAspectRatioAfterLayout: Bool = false
+    var hasSetAspectRatioAfterLayout: Bool = false
     lazy var angleRuler: AngleRuler = {
         let ar = AngleRuler(frame: CGRect(x: 0, y: 0, width: view.width, height: 70))
         ar.addTarget(self, action: #selector(angleRulerValueChanged(_:)), for: .valueChanged)
@@ -223,7 +223,7 @@ class CropperViewController: UIViewController {
         self.cancelStasis()
     }
 
-    override func viewDidLoad() {
+    override public func viewDidLoad() {
         super.viewDidLoad()
 
         navigationController?.navigationBar.isHidden = true
@@ -261,7 +261,7 @@ class CropperViewController: UIViewController {
         view.addSubview(topBar)
     }
 
-    override func viewDidLayoutSubviews() {
+    override public func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
         // Layout when self.view finish layout and never layout before, or self.view need reload
@@ -288,19 +288,19 @@ class CropperViewController: UIViewController {
         }
     }
 
-    override var prefersStatusBarHidden: Bool {
+    override public var prefersStatusBarHidden: Bool {
         return true
     }
 
-    override var preferredStatusBarStyle: UIStatusBarStyle {
+    override public var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
 
-    override var preferredScreenEdgesDeferringSystemGestures: UIRectEdge {
+    override public var preferredScreenEdgesDeferringSystemGestures: UIRectEdge {
         return .top
     }
 
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+    override public func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         needReload = true
     }
@@ -308,7 +308,7 @@ class CropperViewController: UIViewController {
     // MARK: - User Interaction
 
     @objc
-    private func cropBoxPan(_ pan: UIPanGestureRecognizer) {
+    func cropBoxPan(_ pan: UIPanGestureRecognizer) {
         let point = pan.location(in: view)
 
         if pan.state == .began {
@@ -339,17 +339,17 @@ class CropperViewController: UIViewController {
     }
 
     @objc
-    private func cancelButtonPressed(_: UIButton) {
+    func cancelButtonPressed(_: UIButton) {
         delegate?.cropperDidCancel(self)
     }
 
     @objc
-    private func confirmButtonPressed(_: UIButton) {
+    func confirmButtonPressed(_: UIButton) {
         delegate?.cropperDidConfirm(self, state: saveState())
     }
 
     @objc
-    private func resetButtonPressed(_: UIButton) {
+    func resetButtonPressed(_: UIButton) {
         overlay.blur = false
         overlay.gridLinesAlpha = 0
         overlay.cropBoxAlpha = 0
@@ -370,282 +370,26 @@ class CropperViewController: UIViewController {
     }
 
     @objc
-    private func flipButtonPressed(_: UIButton) {
+    func flipButtonPressed(_: UIButton) {
         flip()
     }
 
     @objc
-    private func rotateButtonPressed(_: UIButton) {
+    func rotateButtonPressed(_: UIButton) {
         rotate90degrees()
     }
 
     @objc
-    private func aspectRationButtonPressed(_: UIButton) {
+    func aspectRationButtonPressed(_: UIButton) {
         showAspectRatioPicker()
-    }
-}
-
-// MARK: - Public Methods
-
-extension CropperViewController {
-
-    public func saveState() -> CropperState {
-        let cs = CropperState(viewFrame: view.frame,
-                              angle: totalAngle,
-                              rotationAngle: rotationAngle,
-                              straightenAngle: straightenAngle,
-                              flipAngle: flipAngle,
-                              imageOrientationRawValue: imageView.image?.imageOrientation.rawValue ?? 0,
-                              scrollViewTransform: scrollView.transform,
-                              scrollViewCenter: scrollView.center,
-                              scrollViewBounds: scrollView.bounds,
-                              scrollViewContentOffset: scrollView.contentOffset,
-                              scrollViewMinimumZoomScale: scrollView.minimumZoomScale,
-                              scrollViewMaximumZoomScale: scrollView.maximumZoomScale,
-                              scrollViewZoomScale: scrollView.zoomScale,
-                              cropBoxFrame: overlay.cropBoxFrame,
-                              aspectRatioLocked: aspectRatioLocked,
-                              currentAspectRatio: currentAspectRatio,
-                              currentAspectRatioValue: currentAspectRatioValue,
-                              photoTranslation: photoTranslation(),
-                              imageViewTransform: imageView.transform,
-                              imageViewBoundsSize: imageView.bounds.size)
-        return cs
-    }
-
-    public func restoreState(_ state: CropperState, animated: Bool = false) {
-        guard view.frame.equalTo(state.viewFrame) else {
-            return
-        }
-
-        let animationsBlock = { () -> Void in
-            self.rotationAngle = state.rotationAngle
-            self.straightenAngle = state.straightenAngle
-            self.flipAngle = state.flipAngle
-            let orientation = UIImage.Orientation(rawValue: state.imageOrientationRawValue) ?? .up
-            self.imageView.image = self.imageView.image?.withOrientation(orientation)
-            self.scrollView.minimumZoomScale = state.scrollViewMinimumZoomScale
-            self.scrollView.maximumZoomScale = state.scrollViewMaximumZoomScale
-            self.scrollView.zoomScale = state.scrollViewZoomScale
-            self.scrollView.transform = state.scrollViewTransform
-            self.scrollView.bounds = state.scrollViewBounds
-            self.scrollView.contentOffset = state.scrollViewContentOffset
-            self.scrollView.center = state.scrollViewCenter
-            self.overlay.cropBoxFrame = state.cropBoxFrame
-            self.aspectRatioLocked = state.aspectRatioLocked
-            self.currentAspectRatio = state.currentAspectRatio
-            //            self.aspectRatioPicker.currentAspectRatio =
-            self.currentAspectRatioValue = state.currentAspectRatioValue
-            self.angleRuler.value = state.straightenAngle * 180 / CGFloat.pi
-            // No need restore
-            //            self.photoTranslation() = state.photoTranslation
-            //            self.imageView.transform = state.imageViewTransform
-            //            self.imageView.bounds.size = state.imageViewBoundsSize
-        }
-
-        if animated {
-            UIView.animate(withDuration: 0.25, animations: animationsBlock)
-        } else {
-            animationsBlock()
-        }
-    }
-
-    public func setStraightenAngle(_ angle: CGFloat) {
-        overlay.cropBoxFrame = overlay.cropBoxFrame
-        overlay.gridLinesAlpha = 1
-        overlay.gridLinesCount = 8
-
-        UIView.animate(withDuration: 0.2, animations: {
-            self.overlay.blur = false
-        })
-
-        straightenAngle = angle
-        scrollView.transform = CGAffineTransform(rotationAngle: totalAngle)
-
-        let rect = overlay.cropBoxFrame
-        let rotatedRect = rect.applying(CGAffineTransform(rotationAngle: totalAngle))
-        let width = rotatedRect.size.width
-        let height = rotatedRect.size.height
-        let center = scrollView.center
-
-        let contentOffset = scrollView.contentOffset
-        let contentOffsetCenter = CGPoint(x: contentOffset.x + scrollView.bounds.size.width / 2, y: contentOffset.y + scrollView.bounds.size.height / 2)
-        scrollView.bounds = CGRect(x: 0, y: 0, width: width, height: height)
-        let newContentOffset = CGPoint(x: contentOffsetCenter.x - scrollView.bounds.size.width / 2, y: contentOffsetCenter.y - scrollView.bounds.size.height / 2)
-        scrollView.contentOffset = newContentOffset
-        scrollView.center = center
-
-        let shouldScale: Bool = scrollView.contentSize.width / scrollView.bounds.size.width <= 1.0 || scrollView.contentSize.height / scrollView.bounds.size.height <= 1.0
-        if !manualZoomed || shouldScale {
-            scrollView.minimumZoomScale = scrollViewZoomScaleToBounds()
-            scrollView.setZoomScale(scrollViewZoomScaleToBounds(), animated: false)
-
-            manualZoomed = false
-        }
-
-        scrollView.contentOffset = safeContentOffsetForScrollView(newContentOffset)
-        toolbar.resetButton.isHidden = isCurrentlyInDefalutState
-    }
-
-    public func setAspectRatioValue(_ aspectRatioValue: CGFloat) {
-        guard aspectRatioValue > 0 else { return }
-
-        topBar.isUserInteractionEnabled = false
-        bottomView.isUserInteractionEnabled = false
-        aspectRatioLocked = true
-        currentAspectRatioValue = aspectRatioValue
-
-        var targetCropBoxFrame: CGRect
-        let height: CGFloat = maxCropRegion.size.width / aspectRatioValue
-        if height <= maxCropRegion.size.height {
-            targetCropBoxFrame = CGRect(center: defaultCropBoxCenter, size: CGSize(width: maxCropRegion.size.width, height: height))
-        } else {
-            let width = maxCropRegion.size.height * aspectRatioValue
-            targetCropBoxFrame = CGRect(center: defaultCropBoxCenter, size: CGSize(width: width, height: maxCropRegion.size.height))
-        }
-        targetCropBoxFrame = safeCropBoxFrame(targetCropBoxFrame)
-
-        let currentCropBoxFrame = overlay.cropBoxFrame
-
-        /// The content of the image is getting bigger and bigger when switching the aspect ratio.
-        /// Make a fake cropBoxFrame to help calculate how much the image should be scaled.
-        var contentBiggerThanCurrentTargetCropBoxFrame: CGRect
-        if currentCropBoxFrame.size.width / currentCropBoxFrame.size.height > aspectRatioValue {
-            contentBiggerThanCurrentTargetCropBoxFrame = CGRect(center: defaultCropBoxCenter, size: CGSize(width: currentCropBoxFrame.size.width, height: currentCropBoxFrame.size.width / aspectRatioValue))
-        } else {
-            contentBiggerThanCurrentTargetCropBoxFrame = CGRect(center: defaultCropBoxCenter, size: CGSize(width: currentCropBoxFrame.size.height * aspectRatioValue, height: currentCropBoxFrame.size.height))
-        }
-        let extraZoomScale = max(targetCropBoxFrame.size.width / contentBiggerThanCurrentTargetCropBoxFrame.size.width, targetCropBoxFrame.size.height / contentBiggerThanCurrentTargetCropBoxFrame.size.height)
-
-        overlay.gridLinesAlpha = 0
-
-        matchScrollViewAndCropView(animated: true, targetCropBoxFrame: targetCropBoxFrame, extraZoomScale: extraZoomScale, blurLayerAnimated: true, animations: nil, completion: {
-            self.topBar.isUserInteractionEnabled = true
-            self.bottomView.isUserInteractionEnabled = true
-            self.toolbar.resetButton.isHidden = self.isCurrentlyInDefalutState
-        })
-    }
-
-    public func rotate90degrees(clockwise: Bool = true) {
-        topBar.isUserInteractionEnabled = false
-        bottomView.isUserInteractionEnabled = false
-
-        // Make sure to cover the entire screen while rotating
-        let scale = max(maxCropRegion.size.width / overlay.cropBoxFrame.size.width, maxCropRegion.size.height / overlay.cropBoxFrame.size.height)
-        let frame = scrollViewContainer.bounds.insetBy(dx: -scrollViewContainer.width * scale * 3, dy: -scrollViewContainer.height * scale * 3)
-
-        let rotatingOverlay = Overlay(frame: frame)
-        rotatingOverlay.blur = false
-        rotatingOverlay.maskColor = backgroundView.backgroundColor ?? .black
-        rotatingOverlay.cropBoxAlpha = 0
-        scrollViewContainer.addSubview(rotatingOverlay)
-
-        let rotatingCropBoxFrame = rotatingOverlay.convert(overlay.cropBoxFrame, from: backgroundView)
-        rotatingOverlay.cropBoxFrame = rotatingCropBoxFrame
-        rotatingOverlay.transform = .identity
-        rotatingOverlay.layer.anchorPoint = CGPoint(x: rotatingCropBoxFrame.midX / rotatingOverlay.size.width,
-                                                    y: rotatingCropBoxFrame.midY / rotatingOverlay.size.height)
-
-        overlay.isHidden = true
-
-        UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseOut, animations: {
-            // rotate scroll view
-            if clockwise {
-                self.rotationAngle += CGFloat.pi / 2.0
-            } else {
-                self.rotationAngle -= CGFloat.pi / 2.0
-            }
-            self.rotationAngle = self.standardizeAngle(self.rotationAngle)
-            self.scrollView.transform = CGAffineTransform(rotationAngle: self.totalAngle)
-
-            // position scroll view
-            let scrollViewCenter = self.scrollView.center
-            let cropBoxCenter = self.defaultCropBoxCenter
-            let r = self.overlay.cropBoxFrame
-            var rect: CGRect = .zero
-
-            let scaleX = self.maxCropRegion.size.width / r.size.height
-            let scaleY = self.maxCropRegion.size.height / r.size.width
-
-            let scale = min(scaleX, scaleY)
-
-            rect.size.width = r.size.height * scale
-            rect.size.height = r.size.width * scale
-
-            rect.origin.x = cropBoxCenter.x - rect.size.width / 2.0
-            rect.origin.y = cropBoxCenter.y - rect.size.height / 2.0
-
-            self.overlay.cropBoxFrame = rect
-
-            rotatingOverlay.transform = CGAffineTransform(rotationAngle: CGFloat.pi / 2.0).scaledBy(x: scale, y: scale)
-            rotatingOverlay.center = scrollViewCenter
-
-            let rotatedRect = rect.applying(CGAffineTransform(rotationAngle: self.totalAngle))
-            let width = rotatedRect.size.width
-            let height = rotatedRect.size.height
-
-            let contentOffset = self.scrollView.contentOffset
-            let showingContentCenter = CGPoint(x: contentOffset.x + self.scrollView.bounds.size.width / 2, y: contentOffset.y + self.scrollView.bounds.size.height / 2)
-            let showingContentNormalizedCenter = CGPoint(x: showingContentCenter.x / self.imageView.width, y: showingContentCenter.y / self.imageView.height)
-
-            self.scrollView.bounds = CGRect(x: 0, y: 0, width: width, height: height)
-            let zoomScale = self.scrollView.zoomScale * scale
-            self.willSetScrollViewZoomScale(zoomScale)
-            self.scrollView.zoomScale = zoomScale
-            let newContentOffset = CGPoint(x: showingContentNormalizedCenter.x * self.imageView.width - self.scrollView.bounds.size.width * 0.5,
-                                           y: showingContentNormalizedCenter.y * self.imageView.height - self.scrollView.bounds.size.height * 0.5)
-            self.scrollView.contentOffset = self.safeContentOffsetForScrollView(newContentOffset)
-            self.scrollView.center = scrollViewCenter
-        }, completion: { _ in
-            self.allowedAspectRatios = self.allowedAspectRatios.map { $0.rotated }
-            self.currentAspectRatio = self.currentAspectRatio.rotated
-            if self.aspectRatioLocked {
-                self.currentAspectRatioValue = 1 / self.currentAspectRatioValue
-            }
-            self.overlay.cropBoxAlpha = 0
-            self.overlay.blur = true
-            self.overlay.isHidden = false
-            UIView.animate(withDuration: 0.25, animations: {
-                rotatingOverlay.alpha = 0
-                self.overlay.cropBoxAlpha = 1
-            }, completion: { _ in
-                rotatingOverlay.isHidden = true
-                rotatingOverlay.removeFromSuperview()
-                self.topBar.isUserInteractionEnabled = true
-                self.bottomView.isUserInteractionEnabled = true
-                self.toolbar.resetButton.isHidden = self.isCurrentlyInDefalutState
-            })
-        })
-    }
-
-    public func flip(directionHorizontal: Bool = true) {
-        let size: CGSize = scrollView.contentSize
-        let contentOffset = scrollView.contentOffset
-        let bounds: CGSize = scrollView.bounds.size
-
-        scrollView.contentOffset = CGPoint(x: size.width - bounds.width - contentOffset.x, y: contentOffset.y)
-
-        let image = imageView.image
-        let fliped: Bool = (image?.imageOrientation == .upMirrored)
-        // TODO: multi imageOrientation
-
-        if directionHorizontal {
-            flipAngle += -2.0 * totalAngle // Make sum equal to -self.totalAngle
-        } else {
-            flipAngle += CGFloat.pi - 2.0 * totalAngle //  Make sum equal to pi - self.totalAngle
-        }
-
-        imageView.image = image?.withOrientation(fliped ? .up : .upMirrored)
-
-        scrollView.transform = CGAffineTransform(rotationAngle: totalAngle)
     }
 }
 
 // MARK: - Private Methods
 
-private extension CropperViewController {
+extension CropperViewController {
 
-    private var cropBoxFrame: CGRect {
+    var cropBoxFrame: CGRect {
         get {
             return overlay.cropBoxFrame
         }
@@ -721,42 +465,6 @@ private extension CropperViewController {
         toolbar.resetButton.isHidden = true
     }
 
-    // Make angle in 0 - 360 degrees
-    func standardizeAngle(_ angle: CGFloat) -> CGFloat {
-        var angle = angle
-        if angle >= 0, angle <= 2 * CGFloat.pi {
-            return angle
-        } else if angle < 0 {
-            angle += 2 * CGFloat.pi
-
-            return standardizeAngle(angle)
-        } else {
-            angle -= 2 * CGFloat.pi
-
-            return standardizeAngle(angle)
-        }
-    }
-
-    func autoHorizontalOrVerticalAngle(_ angle: CGFloat) -> CGFloat {
-        var angle = angle
-        angle = standardizeAngle(angle)
-
-        let deviation: CGFloat = 0.017444444 // 1 * 3.14 / 180, sync with AngleRuler
-        if abs(angle - 0) < deviation {
-            angle = 0
-        } else if abs(angle - CGFloat.pi / 2.0) < deviation {
-            angle = CGFloat.pi / 2.0
-        } else if abs(angle - CGFloat.pi) < deviation {
-            angle = CGFloat.pi - 0.001 // Handling a iOS bug that causes problems with rotation animations
-        } else if abs(angle - CGFloat.pi / 2.0 * 3) < deviation {
-            angle = CGFloat.pi / 2.0 * 3
-        } else if abs(angle - CGFloat.pi * 2) < deviation {
-            angle = CGFloat.pi * 2
-        }
-
-        return angle
-    }
-
     func scrollViewZoomScaleToBounds() -> CGFloat {
         let scaleW = scrollView.bounds.size.width / imageView.bounds.size.width
         let scaleH = scrollView.bounds.size.height / imageView.bounds.size.height
@@ -778,60 +486,6 @@ private extension CropperViewController {
         let zeroPoint = CGPoint(x: view.frame.width / 2, y: defaultCropBoxCenter.y)
 
         return CGPoint(x: point.x - zeroPoint.x, y: point.y - zeroPoint.y)
-    }
-
-    func nearestCropBoxEdgeForPoint(point: CGPoint) -> CropBoxEdge {
-        var frame = overlay.cropBoxFrame
-
-        frame = frame.insetBy(dx: -cropBoxHotArea / 2.0, dy: -cropBoxHotArea / 2.0)
-
-        let topLeftRect = CGRect(origin: frame.origin, size: CGSize(width: cropBoxHotArea, height: cropBoxHotArea))
-
-        if topLeftRect.contains(point) {
-            return .topLeft
-        }
-
-        var topRightRect = topLeftRect
-        topRightRect.origin.x = frame.maxX - cropBoxHotArea
-        if topRightRect.contains(point) {
-            return .topRight
-        }
-
-        var bottomLeftRect = topLeftRect
-        bottomLeftRect.origin.y = frame.maxY - cropBoxHotArea
-        if bottomLeftRect.contains(point) {
-            return .bottomLeft
-        }
-
-        var bottomRightRect = topRightRect
-        bottomRightRect.origin.y = bottomLeftRect.origin.y
-        if bottomRightRect.contains(point) {
-            return .bottomRight
-        }
-
-        let topRect = CGRect(origin: frame.origin, size: CGSize(width: frame.width, height: cropBoxHotArea))
-        if topRect.contains(point) {
-            return .top
-        }
-
-        var bottomRect = topRect
-        bottomRect.origin.y = frame.maxY - cropBoxHotArea
-        if bottomRect.contains(point) {
-            return .bottom
-        }
-
-        let leftRect = CGRect(origin: frame.origin, size: CGSize(width: cropBoxHotArea, height: frame.height))
-        if leftRect.contains(point) {
-            return .left
-        }
-
-        var rightRect = leftRect
-        rightRect.origin.x = frame.maxX - cropBoxHotArea
-        if rightRect.contains(point) {
-            return .right
-        }
-
-        return .none
     }
 
     static let overlayCropBoxFramePlaceholder: CGRect = .zero
@@ -946,277 +600,17 @@ private extension CropperViewController {
         return cropBoxFrame
     }
 
-    func isCurrentlyInState(_ state: CropperState?) -> Bool {
-        guard let state = state else { return false }
-        let epsilon: CGFloat = 0.0001
-
-        if state.viewFrame.isEqual(to: view.frame, accuracy: epsilon),
-            state.angle.isEqual(to: totalAngle, accuracy: epsilon),
-            state.rotationAngle.isEqual(to: rotationAngle, accuracy: epsilon),
-            state.straightenAngle.isEqual(to: straightenAngle, accuracy: epsilon),
-            state.flipAngle.isEqual(to: flipAngle, accuracy: epsilon),
-            state.imageOrientationRawValue == imageView.image?.imageOrientation.rawValue ?? 0,
-            state.scrollViewTransform.isEqual(to: scrollView.transform, accuracy: epsilon),
-            state.scrollViewCenter.isEqual(to: scrollView.center, accuracy: epsilon),
-            state.scrollViewBounds.isEqual(to: scrollView.bounds, accuracy: epsilon),
-            state.scrollViewContentOffset.isEqual(to: scrollView.contentOffset, accuracy: epsilon),
-            state.scrollViewMinimumZoomScale.isEqual(to: scrollView.minimumZoomScale, accuracy: epsilon),
-            state.scrollViewMaximumZoomScale.isEqual(to: scrollView.maximumZoomScale, accuracy: epsilon),
-            state.scrollViewZoomScale.isEqual(to: scrollView.zoomScale, accuracy: epsilon),
-            state.cropBoxFrame.isEqual(to: overlay.cropBoxFrame, accuracy: epsilon),
-            state.aspectRatioLocked == aspectRatioLocked,
-            state.currentAspectRatio == currentAspectRatio,
-            state.currentAspectRatioValue.isEqual(to: currentAspectRatioValue, accuracy: epsilon) {
-            return true
-        }
-
-        return false
-    }
-
-    func updateCropBoxFrameWithPanGesturePoint(_ point: CGPoint) {
-        var point = point
-        var frame = overlay.cropBoxFrame
-        let originFrame = panBeginningCropBoxFrame
-        let contentFrame = maxCropRegion
-
-        point.x = max(contentFrame.origin.x, point.x)
-        point.y = max(contentFrame.origin.y, point.y)
-
-        // The delta between where we first tapped, and where our finger is now
-        var xDelta = (point.x - panBeginningPoint.x)
-        var yDelta = (point.y - panBeginningPoint.y)
-
-        let aspectRatio = currentAspectRatioValue
-
-        var panHorizontal: Bool = false
-        var panVertical: Bool = false
-
-        switch panBeginningCropBoxEdge {
-        case .left:
-            frame.origin.x = originFrame.origin.x + xDelta
-            frame.size.width = max(cropBoxMinSize, originFrame.size.width - xDelta)
-            if aspectRatioLocked {
-                panHorizontal = true
-                xDelta = max(xDelta, 0)
-                let scaleOrigin = CGPoint(x: originFrame.maxX, y: originFrame.midY)
-                frame.size.height = frame.size.width / aspectRatio
-                frame.origin.y = scaleOrigin.y - (frame.size.height * 0.5)
-            }
-
-        case .right:
-            if aspectRatioLocked {
-                panHorizontal = true
-                frame.size.width = max(cropBoxMinSize, originFrame.size.width + xDelta)
-                frame.size.width = min(frame.size.width, contentFrame.size.height * aspectRatio)
-                let scaleOrigin = CGPoint(x: originFrame.minX, y: originFrame.midY)
-                frame.size.height = frame.size.width / aspectRatio
-                frame.origin.y = scaleOrigin.y - (frame.size.height * 0.5)
-            } else {
-                frame.size.width = originFrame.size.width + xDelta
-            }
-
-        case .bottom:
-            if aspectRatioLocked {
-                panVertical = true
-                frame.size.height = max(cropBoxMinSize, originFrame.size.height + yDelta)
-                frame.size.height = min(frame.size.height, contentFrame.size.width / aspectRatio)
-                let scaleOrigin = CGPoint(x: originFrame.midX, y: originFrame.minY)
-                frame.size.width = frame.size.height * aspectRatio
-                frame.origin.x = scaleOrigin.x - (frame.size.width * 0.5)
-            } else {
-                frame.size.height = originFrame.size.height + yDelta
-            }
-
-        case .top:
-            if aspectRatioLocked {
-                panVertical = true
-                yDelta = max(0, yDelta)
-                frame.origin.y = originFrame.origin.y + yDelta
-                frame.size.height = max(cropBoxMinSize, originFrame.size.height - yDelta)
-                let scaleOrigin = CGPoint(x: originFrame.midX, y: originFrame.maxY)
-                frame.size.width = frame.size.height * aspectRatio
-                frame.origin.x = scaleOrigin.x - (frame.size.width * 0.5)
-            } else {
-                frame.origin.y = originFrame.origin.y + yDelta
-                frame.size.height = originFrame.size.height - yDelta
-            }
-
-        case .topLeft:
-            if aspectRatioLocked {
-                xDelta = max(xDelta, 0)
-                yDelta = max(yDelta, 0)
-
-                var distance = CGPoint()
-                distance.x = 1.0 - (xDelta / originFrame.width)
-                distance.y = 1.0 - (yDelta / originFrame.height)
-
-                let scale = (distance.x + distance.y) * 0.5
-
-                frame.size.width = (originFrame.width * scale)
-                frame.size.height = (originFrame.height * scale)
-                frame.origin.x = originFrame.origin.x + (originFrame.width - frame.size.width)
-                frame.origin.y = originFrame.origin.y + (originFrame.height - frame.size.height)
-
-                panVertical = true
-                panHorizontal = true
-            } else {
-                frame.origin.x = originFrame.origin.x + xDelta
-                frame.size.width = originFrame.size.width - xDelta
-                frame.origin.y = originFrame.origin.y + yDelta
-                frame.size.height = originFrame.size.height - yDelta
-            }
-
-        case .topRight:
-            if aspectRatioLocked {
-                xDelta = max(xDelta, 0)
-                yDelta = max(yDelta, 0)
-
-                var distance = CGPoint()
-                distance.x = 1.0 - ((-xDelta) / originFrame.width)
-                distance.y = 1.0 - (yDelta / originFrame.height)
-
-                var scale = (distance.x + distance.y) * 0.5
-                scale = min(1.0, scale)
-
-                frame.size.width = (originFrame.width * scale)
-                frame.size.height = (originFrame.height * scale)
-                frame.origin.y = originFrame.maxY - frame.size.height
-
-                panVertical = true
-                panHorizontal = true
-            } else {
-                frame.size.width = originFrame.size.width + xDelta
-                frame.origin.y = originFrame.origin.y + yDelta
-                frame.size.height = originFrame.size.height - yDelta
-            }
-
-        case .bottomLeft:
-            if aspectRatioLocked {
-                var distance = CGPoint()
-                distance.x = 1.0 - (xDelta / originFrame.width)
-                distance.y = 1.0 - (-yDelta / originFrame.height)
-
-                let scale = (distance.x + distance.y) * 0.5
-
-                frame.size.width = (originFrame.width * scale)
-                frame.size.height = (originFrame.height * scale)
-                frame.origin.x = originFrame.maxX - frame.size.width
-
-                panVertical = true
-                panHorizontal = true
-            } else {
-                frame.size.height = originFrame.size.height + yDelta
-                frame.origin.x = originFrame.origin.x + xDelta
-                frame.size.width = originFrame.size.width - xDelta
-            }
-
-        case .bottomRight:
-            if aspectRatioLocked {
-                var distance = CGPoint()
-                distance.x = 1.0 - ((-1 * xDelta) / originFrame.width)
-                distance.y = 1.0 - ((-1 * yDelta) / originFrame.height)
-
-                let scale = (distance.x + distance.y) * 0.5
-
-                frame.size.width = (originFrame.width * scale)
-                frame.size.height = (originFrame.height * scale)
-
-                panVertical = true
-                panHorizontal = true
-            } else {
-                frame.size.height = originFrame.size.height + yDelta
-                frame.size.width = originFrame.size.width + xDelta
-            }
-
-        case .none:
-            break
-        }
-
-        // Work out the limits the box may be scaled before it starts to overlap itself
-        var minSize: CGSize = .zero
-        minSize.width = cropBoxMinSize
-        minSize.height = cropBoxMinSize
-
-        var maxSize: CGSize = .zero
-        maxSize.width = contentFrame.width
-        maxSize.height = contentFrame.height
-
-        // clamp the box to ensure it doesn't go beyond the bounds we've set
-        if aspectRatioLocked, panHorizontal {
-            maxSize.height = contentFrame.size.width / aspectRatio
-            if aspectRatio > 1 {
-                minSize.width = cropBoxMinSize * aspectRatio
-            } else {
-                minSize.height = cropBoxMinSize / aspectRatio
-            }
-        }
-
-        if aspectRatioLocked, panVertical {
-            maxSize.width = contentFrame.size.height * aspectRatio
-            if aspectRatio > 1 {
-                minSize.width = cropBoxMinSize * aspectRatio
-            } else {
-                minSize.height = cropBoxMinSize / aspectRatio
-            }
-        }
-
-        // Clamp the minimum size
-        frame.size.width = max(frame.size.width, minSize.width)
-        frame.size.height = max(frame.size.height, minSize.height)
-
-        // Clamp the maximum size
-        frame.size.width = min(frame.size.width, maxSize.width)
-        frame.size.height = min(frame.size.height, maxSize.height)
-
-        frame.origin.x = max(frame.origin.x, contentFrame.minX)
-        frame.origin.x = min(frame.origin.x, contentFrame.maxX - minSize.width)
-        frame.origin.x = min(frame.origin.x, originFrame.maxX - minSize.width) // Cannot pan the left side of the box out of the right area of the previous box
-
-        frame.origin.y = max(frame.origin.y, contentFrame.minY)
-        frame.origin.y = min(frame.origin.y, contentFrame.maxY - minSize.height)
-        frame.origin.y = min(frame.origin.y, originFrame.maxY - minSize.height) // Cannot pan the top of the box out of the bottom area of the previous frame
-
-        cropBoxFrame = frame
-    }
-
-    // MARK: Stasis
-
-    // stasis like Zhonya's Hourglass.
-    func stasisAndThenRun(_ closure: @escaping () -> Void) {
-        cancelStasis()
-        stasisTimer = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(stasisOver), userInfo: nil, repeats: false)
-        stasisThings = closure
-    }
-
-    func cancelStasis() {
-        guard stasisTimer != nil else {
-            return
-        }
-        stasisTimer?.invalidate()
-        stasisTimer = nil
-        stasisThings = nil
-        view.isUserInteractionEnabled = true
-    }
-
-    @objc
-    func stasisOver() {
-        view.isUserInteractionEnabled = false
-        if stasisThings != nil {
-            stasisThings?()
-        }
-        cancelStasis()
-    }
 }
 
 // MARK: UIScrollViewDelegate
 
 extension CropperViewController: UIScrollViewDelegate {
 
-    func viewForZooming(in _: UIScrollView) -> UIView? {
+    public func viewForZooming(in _: UIScrollView) -> UIView? {
         return imageView
     }
 
-    func scrollViewWillBeginZooming(_: UIScrollView, with _: UIView?) {
+    public func scrollViewWillBeginZooming(_: UIScrollView, with _: UIView?) {
         cancelStasis()
         overlay.blur = false
         overlay.gridLinesAlpha = 1
@@ -1224,7 +618,7 @@ extension CropperViewController: UIScrollViewDelegate {
         bottomView.isUserInteractionEnabled = false
     }
 
-    func scrollViewDidEndZooming(_: UIScrollView, with _: UIView?, atScale _: CGFloat) {
+    public func scrollViewDidEndZooming(_: UIScrollView, with _: UIView?, atScale _: CGFloat) {
         matchScrollViewAndCropView(animated: true, completion: {
             self.stasisAndThenRun {
                 UIView.animate(withDuration: 0.25, animations: {
@@ -1241,7 +635,7 @@ extension CropperViewController: UIScrollViewDelegate {
         })
     }
 
-    func scrollViewWillBeginDragging(_: UIScrollView) {
+    public func scrollViewWillBeginDragging(_: UIScrollView) {
         cancelStasis()
         overlay.blur = false
         overlay.gridLinesAlpha = 1
@@ -1249,7 +643,7 @@ extension CropperViewController: UIScrollViewDelegate {
         bottomView.isUserInteractionEnabled = false
     }
 
-    func scrollViewDidEndDragging(_: UIScrollView, willDecelerate decelerate: Bool) {
+    public func scrollViewDidEndDragging(_: UIScrollView, willDecelerate decelerate: Bool) {
         if !decelerate {
             matchScrollViewAndCropView(animated: true, completion: {
                 self.stasisAndThenRun {
@@ -1266,7 +660,7 @@ extension CropperViewController: UIScrollViewDelegate {
         }
     }
 
-    func scrollViewDidEndDecelerating(_: UIScrollView) {
+    public func scrollViewDidEndDecelerating(_: UIScrollView) {
         matchScrollViewAndCropView(animated: true, completion: {
             self.stasisAndThenRun {
                 UIView.animate(withDuration: 0.25, animations: {
@@ -1286,7 +680,7 @@ extension CropperViewController: UIScrollViewDelegate {
 
 extension CropperViewController: UIGestureRecognizerDelegate {
 
-    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+    public func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
         if gestureRecognizer == cropBoxPanGesture {
             let tapPoint = gestureRecognizer.location(in: view)
 
@@ -1305,23 +699,6 @@ extension CropperViewController: UIGestureRecognizerDelegate {
     }
 }
 
-// MARK: AspectRatioPickerDelegate
+// MARK: Add capability from protocols
 
-extension CropperViewController {
-    func setAspectRatio(_ aspectRatio: AspectRatio) {
-        currentAspectRatio = aspectRatio
-        switch aspectRatio {
-        case .original:
-            setAspectRatioValue(originalImage.size.width / originalImage.size.height)
-            aspectRatioLocked = true
-        case .freeForm:
-            aspectRatioLocked = false
-        case .square:
-            setAspectRatioValue(1)
-            aspectRatioLocked = true
-        case let .ratio(width, height):
-            setAspectRatioValue(CGFloat(width) / CGFloat(height))
-            aspectRatioLocked = true
-        }
-    }
-}
+extension CropperViewController: Stasisable, AngleAssist, CropBoxEdgeDraggable, AspectRatioSettable {}

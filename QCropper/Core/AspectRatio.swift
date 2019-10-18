@@ -6,7 +6,7 @@
 
 import Foundation
 
-enum AspectRatio {
+public enum AspectRatio {
     case original
     case freeForm
     case square
@@ -35,12 +35,14 @@ enum AspectRatio {
     }
 }
 
+// MARK: Codable
+
 extension AspectRatio: Codable {
     enum CodingKeys: String, CodingKey {
         case description
     }
 
-    init(from decoder: Decoder) throws {
+    public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         guard let desc = try container.decodeIfPresent(String.self, forKey: .description) else {
             self = .freeForm
@@ -65,7 +67,7 @@ extension AspectRatio: Codable {
         }
     }
 
-    func encode(to encoder: Encoder) throws {
+    public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(description, forKey: .description)
     }
