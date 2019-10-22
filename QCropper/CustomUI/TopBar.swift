@@ -55,7 +55,8 @@ class TopBar: UIView {
         let button = UIButton(frame: CGRect(center: .zero, size: CGSize(width: 44, height: 44)))
         button.setImage(UIImage(systemNameOrColorIfNotAvailable: iconName), for: .normal)
         if #available(iOS 13.0, *) {
-            button.setImage(UIImage(systemNameOrColorIfNotAvailable: iconName)?.withTintColor(highlightColor), for: .selected)
+            let image = UIImage(systemNameOrColorIfNotAvailable: iconName)?.withTintColor(highlightColor, renderingMode: .alwaysOriginal)
+            button.setImage(image, for: .selected)
         }
         button.tintColor = UIColor(white: 0.725, alpha: 1)
         button.bottom = height

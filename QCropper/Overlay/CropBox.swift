@@ -100,7 +100,7 @@ extension CropBox {
 
             backgroundColor = UIColor.clear
 
-            let lineWidth: CGFloat = 2
+            let lineWidth: CGFloat = 2 + 1.0 / UIScreen.main.scale
             let lineColor: UIColor = .white
 
             let horizontal = UIView(frame: CGRect(x: 0, y: 0, width: cornerSize, height: lineWidth))

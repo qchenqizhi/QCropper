@@ -57,7 +57,6 @@ public class CropperViewController: UIViewController, Rotatable, StateRestorable
         }
     }
 
-    public var currentAspectRatio: AspectRatio = .freeForm
     public var currentAspectRatioValue: CGFloat = 1.0
 
     let cropBoxHotArea: CGFloat = 50
@@ -161,7 +160,7 @@ public class CropperViewController: UIViewController, Rotatable, StateRestorable
         return toolbar
     }()
 
-    var allowedAspectRatios: [AspectRatio] = [
+    let verticalAspectRatios: [AspectRatio] = [
         .original,
         .freeForm,
         .square,
@@ -173,27 +172,20 @@ public class CropperViewController: UIViewController, Rotatable, StateRestorable
         .ratio(width: 2, height: 3)
     ]
 
-    func showAspectRatioPicker() {
-        let alert = UIAlertController(title: "Select aspect ratio", message: nil, preferredStyle: .actionSheet)
-        for ar in allowedAspectRatios {
-            alert.addAction(UIAlertAction(title: ar.description, style: .default, handler: { _ in
-                self.setAspectRatio(ar)
-            }))
-        }
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        present(alert, animated: true, completion: nil)
-    }
-
-    lazy var aspectRatioPicker: UIView = UIView()
-
     lazy var overlay: Overlay = Overlay(frame: self.view.bounds)
 
-    var hasSetAspectRatioAfterLayout: Bool = false
     lazy var angleRuler: AngleRuler = {
-        let ar = AngleRuler(frame: CGRect(x: 0, y: 0, width: view.width, height: 70))
+        let ar = AngleRuler(frame: CGRect(x: 0, y: 0, width: view.width, height: 80))
         ar.addTarget(self, action: #selector(angleRulerValueChanged(_:)), for: .valueChanged)
         ar.addTarget(self, action: #selector(angleRulerTouchEnded(_:)), for: [.editingDidEnd])
         return ar
+    }()
+
+    lazy var aspectRatioPicker: AspectRatioPicker = {
+        let picker = AspectRatioPicker(frame: CGRect(x: 0, y: 0, width: view.width, height: 80))
+        picker.isHidden = true
+        picker.delegate = self
+        return picker
     }()
 
     @objc
@@ -223,7 +215,7 @@ public class CropperViewController: UIViewController, Rotatable, StateRestorable
         self.cancelStasis()
     }
 
-    override public func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
 
         navigationController?.navigationBar.isHidden = true
@@ -261,7 +253,7 @@ public class CropperViewController: UIViewController, Rotatable, StateRestorable
         view.addSubview(topBar)
     }
 
-    override public func viewDidLayoutSubviews() {
+    public override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
         // Layout when self.view finish layout and never layout before, or self.view need reload
@@ -278,29 +270,24 @@ public class CropperViewController: UIViewController, Rotatable, StateRestorable
 
             if let initialState = initialState {
                 restoreState(initialState)
-                toolbar.resetButton.isHidden = isCurrentlyInDefalutState
-            }
-
-            if initialState != nil, !hasSetAspectRatioAfterLayout {
-                hasSetAspectRatioAfterLayout = true
-//                aspectRatioPicker.currentAspectRatio = aspectRatioPicker.currentAspectRatio
+                updateButtons()
             }
         }
     }
 
-    override public var prefersStatusBarHidden: Bool {
+    public override var prefersStatusBarHidden: Bool {
         return true
     }
 
-    override public var preferredStatusBarStyle: UIStatusBarStyle {
+    public override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
 
-    override public var preferredScreenEdgesDeferringSystemGestures: UIRectEdge {
+    public override var preferredScreenEdgesDeferringSystemGestures: UIRectEdge {
         return .top
     }
 
-    override public func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+    public override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         needReload = true
     }
@@ -330,7 +317,7 @@ public class CropperViewController: UIViewController, Rotatable, StateRestorable
                 }, completion: {
                     self.topBar.isUserInteractionEnabled = true
                     self.bottomView.isUserInteractionEnabled = true
-                    self.toolbar.resetButton.isHidden = self.isCurrentlyInDefalutState
+                    self.updateButtons()
                 })
             }
         } else {
@@ -380,8 +367,11 @@ public class CropperViewController: UIViewController, Rotatable, StateRestorable
     }
 
     @objc
-    func aspectRationButtonPressed(_: UIButton) {
-        showAspectRatioPicker()
+    func aspectRationButtonPressed(_ sender: UIButton) {
+        sender.isSelected = !sender.isSelected
+
+        angleRuler.isHidden = sender.isSelected
+        aspectRatioPicker.isHidden = !sender.isSelected
     }
 }
 
@@ -407,6 +397,7 @@ extension CropperViewController {
         bottomView.bottom = view.height
         toolbar.bottom = bottomView.height
         angleRuler.bottom = toolbar.top - margin
+        aspectRatioPicker.frame = angleRuler.frame
 
         cropRegionInsets = UIEdgeInsets(top: margin + topBar.height,
                                         left: margin + view.safeAreaInsets.left,
@@ -440,14 +431,12 @@ extension CropperViewController {
         scrollView.center = backgroundView.convert(defaultCropBoxCenter, to: scrollViewContainer)
         imageView.transform = .identity
         imageView.frame = scrollView.bounds
-        aspectRatioPicker.frame = CGRect(x: 0, y: 0, width: view.width, height: 76)
         overlay.frame = backgroundView.bounds
         overlay.cropBoxFrame = CGRect(center: defaultCropBoxCenter, size: defaultCropBoxSize)
 
         straightenAngle = 0
         rotationAngle = 0
         flipAngle = 0
-//        aspectRatioPicker.currentAspectRatio = .freeForm
         aspectRatioLocked = false
         currentAspectRatioValue = 1
 
@@ -462,7 +451,23 @@ extension CropperViewController {
         defaultCropperState = saveState()
 
         angleRuler.value = 0
-        toolbar.resetButton.isHidden = true
+        if overlay.cropBoxFrame.size.width > overlay.cropBoxFrame.size.height {
+            aspectRatioPicker.aspectRatios = verticalAspectRatios.map { $0.rotated }
+        } else {
+            aspectRatioPicker.aspectRatios = verticalAspectRatios
+        }
+        aspectRatioPicker.rotated = false
+        aspectRatioPicker.selectedAspectRatio = .freeForm
+        updateButtons()
+    }
+
+    func updateButtons() {
+        toolbar.resetButton.isHidden = isCurrentlyInDefalutState
+        if initialState != nil {
+            toolbar.doneButton.isEnabled = !isCurrentlyInInitialState
+        } else {
+            toolbar.doneButton.isEnabled = !isCurrentlyInDefalutState
+        }
     }
 
     func scrollViewZoomScaleToBounds() -> CGFloat {
@@ -599,7 +604,6 @@ extension CropperViewController {
 
         return cropBoxFrame
     }
-
 }
 
 // MARK: UIScrollViewDelegate
@@ -627,7 +631,7 @@ extension CropperViewController: UIScrollViewDelegate {
                 }, completion: { _ in
                     self.topBar.isUserInteractionEnabled = true
                     self.bottomView.isUserInteractionEnabled = true
-                    self.toolbar.resetButton.isHidden = self.isCurrentlyInDefalutState
+                    self.updateButtons()
                 })
 
                 self.manualZoomed = true
@@ -653,7 +657,7 @@ extension CropperViewController: UIScrollViewDelegate {
                     }, completion: { _ in
                         self.topBar.isUserInteractionEnabled = true
                         self.bottomView.isUserInteractionEnabled = true
-                        self.toolbar.resetButton.isHidden = self.isCurrentlyInDefalutState
+                        self.updateButtons()
                     })
                 }
             })
@@ -669,7 +673,7 @@ extension CropperViewController: UIScrollViewDelegate {
                 }, completion: { _ in
                     self.topBar.isUserInteractionEnabled = true
                     self.bottomView.isUserInteractionEnabled = true
-                    self.toolbar.resetButton.isHidden = self.isCurrentlyInDefalutState
+                    self.updateButtons()
                 })
             }
         })
@@ -696,6 +700,15 @@ extension CropperViewController: UIGestureRecognizerDelegate {
         }
 
         return true
+    }
+}
+
+// MARK: AspectRatioPickerDelegate
+
+extension CropperViewController: AspectRatioPickerDelegate {
+
+    func aspectRatioPickerDidSelectedAspectRatio(_ aspectRatio: AspectRatio) {
+        setAspectRatio(aspectRatio)
     }
 }
 

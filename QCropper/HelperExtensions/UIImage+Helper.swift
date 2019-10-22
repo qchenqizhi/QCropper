@@ -30,7 +30,7 @@ extension UIImage {
 
     convenience init?(systemNameOrColorIfNotAvailable name: String) {
         if #available(iOS 13.0, *) {
-            self.init(systemName: name, withConfiguration: UIImage.SymbolConfiguration(pointSize: 20))
+            self.init(systemName: name, withConfiguration: UIImage.SymbolConfiguration(pointSize: 20, weight: .thin))
         } else {
             // TODO: png resource
             self.init(color: .white, size: CGSize(width: 20, height: 20))

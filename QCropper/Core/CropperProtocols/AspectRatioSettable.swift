@@ -1,7 +1,7 @@
 //
 //  AspectRatioSettable.swift
 //
-//  Created by Spike on 2019/10/18.
+//  Created by Chen Qizhi on 2019/10/18.
 //
 
 import UIKit
@@ -13,17 +13,48 @@ public protocol AspectRatioSettable {
 
 extension AspectRatioSettable where Self: CropperViewController {
     public func setAspectRatio(_ aspectRatio: AspectRatio) {
-        currentAspectRatio = aspectRatio
         switch aspectRatio {
         case .original:
-            setAspectRatioValue(originalImage.size.width / originalImage.size.height)
+            var width: CGFloat
+            var height: CGFloat
+            let angle = standardizeAngle(rotationAngle)
+            if angle.isEqual(to: .pi / 2.0, accuracy: 0.001) ||
+                angle.isEqual(to: .pi * 1.5, accuracy: 0.001) {
+                width = originalImage.size.height
+                height = originalImage.size.width
+            } else {
+                width = originalImage.size.width
+                height = originalImage.size.height
+            }
+
+            if aspectRatioPicker.rotated {
+                swap(&width, &height)
+            }
+
+            if width > height {
+                aspectRatioPicker.selectedBox = .horizontal
+            } else if width < height {
+                aspectRatioPicker.selectedBox = .vertical
+            } else {
+                aspectRatioPicker.selectedBox = .none
+            }
+            setAspectRatioValue(width / height)
             aspectRatioLocked = true
         case .freeForm:
+            aspectRatioPicker.selectedBox = .none
             aspectRatioLocked = false
         case .square:
+            aspectRatioPicker.selectedBox = .none
             setAspectRatioValue(1)
             aspectRatioLocked = true
         case let .ratio(width, height):
+            if width > height {
+                aspectRatioPicker.selectedBox = .horizontal
+            } else if width < height {
+                aspectRatioPicker.selectedBox = .vertical
+            } else {
+                aspectRatioPicker.selectedBox = .none
+            }
             setAspectRatioValue(CGFloat(width) / CGFloat(height))
             aspectRatioLocked = true
         }
@@ -64,7 +95,7 @@ extension AspectRatioSettable where Self: CropperViewController {
         matchScrollViewAndCropView(animated: true, targetCropBoxFrame: targetCropBoxFrame, extraZoomScale: extraZoomScale, blurLayerAnimated: true, animations: nil, completion: {
             self.topBar.isUserInteractionEnabled = true
             self.bottomView.isUserInteractionEnabled = true
-            self.toolbar.resetButton.isHidden = self.isCurrentlyInDefalutState
+            self.updateButtons()
         })
     }
 }

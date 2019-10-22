@@ -26,6 +26,7 @@ class Toolbar: UIView {
     lazy var doneButton: UIButton = {
         let button = self.titleButton("Done", highlight: true)
         button.right = self.width
+        button.setTitleColor(UIColor(white: 0.4, alpha: 1), for: .disabled)
         button.autoresizingMask = [.flexibleBottomMargin, .flexibleLeftMargin]
         return button
     }()

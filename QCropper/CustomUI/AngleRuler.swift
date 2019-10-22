@@ -24,6 +24,7 @@ class AngleRuler: UIControl {
             }
         }
     }
+
     var value: CGFloat {
         get {
             return _value
@@ -233,7 +234,7 @@ extension AngleRuler: UIScrollViewDelegate {
         }
     }
 
-    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+    func scrollViewDidEndDecelerating(_: UIScrollView) {
         scrollEnded()
     }
 

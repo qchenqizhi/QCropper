@@ -1,7 +1,7 @@
 //
 //  StateRestorable.swift
 //
-//  Created by Spike on 2019/10/18.
+//  Created by Chen Qizhi on 2019/10/18.
 //
 
 import UIKit
@@ -30,10 +30,7 @@ extension StateRestorable where Self: CropperViewController {
             state.scrollViewMinimumZoomScale.isEqual(to: scrollView.minimumZoomScale, accuracy: epsilon),
             state.scrollViewMaximumZoomScale.isEqual(to: scrollView.maximumZoomScale, accuracy: epsilon),
             state.scrollViewZoomScale.isEqual(to: scrollView.zoomScale, accuracy: epsilon),
-            state.cropBoxFrame.isEqual(to: overlay.cropBoxFrame, accuracy: epsilon),
-            state.aspectRatioLocked == aspectRatioLocked,
-            state.currentAspectRatio == currentAspectRatio,
-            state.currentAspectRatioValue.isEqual(to: currentAspectRatioValue, accuracy: epsilon) {
+            state.cropBoxFrame.isEqual(to: overlay.cropBoxFrame, accuracy: epsilon) {
             return true
         }
 
@@ -55,9 +52,6 @@ extension StateRestorable where Self: CropperViewController {
                               scrollViewMaximumZoomScale: scrollView.maximumZoomScale,
                               scrollViewZoomScale: scrollView.zoomScale,
                               cropBoxFrame: overlay.cropBoxFrame,
-                              aspectRatioLocked: aspectRatioLocked,
-                              currentAspectRatio: currentAspectRatio,
-                              currentAspectRatioValue: currentAspectRatioValue,
                               photoTranslation: photoTranslation(),
                               imageViewTransform: imageView.transform,
                               imageViewBoundsSize: imageView.bounds.size)
@@ -83,12 +77,16 @@ extension StateRestorable where Self: CropperViewController {
             self.scrollView.contentOffset = state.scrollViewContentOffset
             self.scrollView.center = state.scrollViewCenter
             self.overlay.cropBoxFrame = state.cropBoxFrame
-            self.aspectRatioLocked = state.aspectRatioLocked
-            self.currentAspectRatio = state.currentAspectRatio
-            //            self.aspectRatioPicker.currentAspectRatio =
-            self.currentAspectRatioValue = state.currentAspectRatioValue
+            if self.overlay.cropBoxFrame.size.width > self.overlay.cropBoxFrame.size.height {
+                self.aspectRatioPicker.aspectRatios = self.verticalAspectRatios
+            } else {
+                self.aspectRatioPicker.aspectRatios = self.verticalAspectRatios.map { $0.rotated }
+            }
+            self.aspectRatioPicker.rotated = false
+            self.aspectRatioPicker.selectedAspectRatio = .freeForm
             self.angleRuler.value = state.straightenAngle * 180 / CGFloat.pi
             // No need restore
+            //            self.currentAspectRatioValue = state.currentAspectRatioValue
             //            self.photoTranslation() = state.photoTranslation
             //            self.imageView.transform = state.imageViewTransform
             //            self.imageView.bounds.size = state.imageViewBoundsSize

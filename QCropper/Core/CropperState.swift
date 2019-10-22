@@ -22,9 +22,9 @@ public struct CropperState: Codable {
     var scrollViewMaximumZoomScale: CGFloat
     var scrollViewZoomScale: CGFloat
     var cropBoxFrame: CGRect
-    var aspectRatioLocked: Bool
-    var currentAspectRatio: AspectRatio
-    var currentAspectRatioValue: CGFloat
+//    var aspectRatioLocked: Bool
+//    var currentAspectRatio: AspectRatio
+//    var currentAspectRatioValue: CGFloat
     var photoTranslation: CGPoint
     var imageViewTransform: CGAffineTransform
     var imageViewBoundsSize: CGSize

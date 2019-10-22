@@ -1,7 +1,7 @@
 //
 //  Rotatable.swift
 //
-//  Created by Spike on 2019/10/18.
+//  Created by Chen Qizhi on 2019/10/18.
 //
 
 import UIKit
@@ -46,7 +46,7 @@ extension Rotatable where Self: CropperViewController {
         }
 
         scrollView.contentOffset = safeContentOffsetForScrollView(newContentOffset)
-        toolbar.resetButton.isHidden = isCurrentlyInDefalutState
+        updateButtons()
     }
 
     public func rotate90degrees(clockwise: Bool = true) {
@@ -122,11 +122,7 @@ extension Rotatable where Self: CropperViewController {
             self.scrollView.contentOffset = self.safeContentOffsetForScrollView(newContentOffset)
             self.scrollView.center = scrollViewCenter
         }, completion: { _ in
-            self.allowedAspectRatios = self.allowedAspectRatios.map { $0.rotated }
-            self.currentAspectRatio = self.currentAspectRatio.rotated
-            if self.aspectRatioLocked {
-                self.currentAspectRatioValue = 1 / self.currentAspectRatioValue
-            }
+            self.aspectRatioPicker.rotateAspectRatios()
             self.overlay.cropBoxAlpha = 0
             self.overlay.blur = true
             self.overlay.isHidden = false
@@ -138,7 +134,7 @@ extension Rotatable where Self: CropperViewController {
                 rotatingOverlay.removeFromSuperview()
                 self.topBar.isUserInteractionEnabled = true
                 self.bottomView.isUserInteractionEnabled = true
-                self.toolbar.resetButton.isHidden = self.isCurrentlyInDefalutState
+                self.updateButtons()
             })
         })
     }

@@ -1,7 +1,7 @@
 //
 //  Flipable.swift
 //
-//  Created by Spike on 2019/10/18.
+//  Created by Chen Qizhi on 2019/10/18.
 //
 
 import UIKit
