@@ -3,39 +3,19 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		11526C852359671100E6F0CA /* AngleAssist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11526C842359671100E6F0CA /* AngleAssist.swift */; };
-		11526C87235968AF00E6F0CA /* Stasisable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11526C86235968AF00E6F0CA /* Stasisable.swift */; };
-		11526C8923597AAC00E6F0CA /* AspectRatioSettable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11526C8823597AAB00E6F0CA /* AspectRatioSettable.swift */; };
-		11526C8B23597DB200E6F0CA /* Rotatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11526C8A23597DB200E6F0CA /* Rotatable.swift */; };
-		11526C8D2359868900E6F0CA /* StateRestorable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11526C8C2359868800E6F0CA /* StateRestorable.swift */; };
-		11526C8F2359887A00E6F0CA /* Flipable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11526C8E2359887A00E6F0CA /* Flipable.swift */; };
-		11526C9123598A2D00E6F0CA /* CropBoxEdgeDraggable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11526C9023598A2D00E6F0CA /* CropBoxEdgeDraggable.swift */; };
+		11574BFF2362700A00A9C9E3 /* CustomOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11574BFE2362700A00A9C9E3 /* CustomOverlay.swift */; };
+		11574C012362701F00A9C9E3 /* CustomCropperViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11574C002362701F00A9C9E3 /* CustomCropperViewController.swift */; };
 		116C4DE9235611E600D11428 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116C4DE8235611E600D11428 /* AppDelegate.swift */; };
 		116C4DED235611E600D11428 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116C4DEC235611E600D11428 /* ViewController.swift */; };
 		116C4DF2235611E800D11428 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 116C4DF1235611E800D11428 /* Assets.xcassets */; };
 		116C4DF5235611E800D11428 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 116C4DF3235611E800D11428 /* LaunchScreen.storyboard */; };
 		116C4E00235611E800D11428 /* ExampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116C4DFF235611E800D11428 /* ExampleTests.swift */; };
 		116C4E0B235611E800D11428 /* ExampleUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116C4E0A235611E800D11428 /* ExampleUITests.swift */; };
-		116C4E1E2356184A00D11428 /* UIView+Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116C4E1D2356184A00D11428 /* UIView+Helper.swift */; };
-		116C4E202356185800D11428 /* UIImage+Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116C4E1F2356185800D11428 /* UIImage+Helper.swift */; };
-		116C4E222356186C00D11428 /* UIImage+Cropping.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116C4E212356186C00D11428 /* UIImage+Cropping.swift */; };
-		116C4E242356187B00D11428 /* HelperExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116C4E232356187B00D11428 /* HelperExtensions.swift */; };
-		116C4E262356188C00D11428 /* Constans.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116C4E252356188C00D11428 /* Constans.swift */; };
-		116C4E282356189700D11428 /* CropperState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116C4E272356189700D11428 /* CropperState.swift */; };
-		116C4E2A235618A600D11428 /* ScrollViewContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116C4E29235618A600D11428 /* ScrollViewContainer.swift */; };
-		116C4E2C235618B500D11428 /* CropperViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116C4E2B235618B500D11428 /* CropperViewController.swift */; };
-		116C4E2E235618C200D11428 /* Overlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116C4E2D235618C200D11428 /* Overlay.swift */; };
-		116C4E30235618C900D11428 /* CropBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116C4E2F235618C900D11428 /* CropBox.swift */; };
-		116C4E32235618CF00D11428 /* Grid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116C4E31235618CF00D11428 /* Grid.swift */; };
-		116C4E34235618D900D11428 /* TopBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116C4E33235618D900D11428 /* TopBar.swift */; };
-		116C4E36235618E000D11428 /* Toolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116C4E35235618E000D11428 /* Toolbar.swift */; };
-		116C4E38235618EF00D11428 /* AngleRuler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116C4E37235618EF00D11428 /* AngleRuler.swift */; };
-		116C4E3A2356190500D11428 /* AspectRatioPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116C4E392356190500D11428 /* AspectRatioPicker.swift */; };
-		11BD91D4235753E1006FF639 /* AspectRatio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11BD91D3235753E1006FF639 /* AspectRatio.swift */; };
+		54F81FE808832BD67844FE50 /* Pods_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D9BC562663C967EEA86066DB /* Pods_Example.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,13 +36,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		11526C842359671100E6F0CA /* AngleAssist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AngleAssist.swift; sourceTree = "<group>"; };
-		11526C86235968AF00E6F0CA /* Stasisable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stasisable.swift; sourceTree = "<group>"; };
-		11526C8823597AAB00E6F0CA /* AspectRatioSettable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AspectRatioSettable.swift; sourceTree = "<group>"; };
-		11526C8A23597DB200E6F0CA /* Rotatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Rotatable.swift; sourceTree = "<group>"; };
-		11526C8C2359868800E6F0CA /* StateRestorable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateRestorable.swift; sourceTree = "<group>"; };
-		11526C8E2359887A00E6F0CA /* Flipable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Flipable.swift; sourceTree = "<group>"; };
-		11526C9023598A2D00E6F0CA /* CropBoxEdgeDraggable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CropBoxEdgeDraggable.swift; sourceTree = "<group>"; };
+		07743BD2F40B96862D6DEAE1 /* Pods-Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Example.debug.xcconfig"; path = "Target Support Files/Pods-Example/Pods-Example.debug.xcconfig"; sourceTree = "<group>"; };
+		11574BFE2362700A00A9C9E3 /* CustomOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomOverlay.swift; sourceTree = "<group>"; };
+		11574C002362701F00A9C9E3 /* CustomCropperViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCropperViewController.swift; sourceTree = "<group>"; };
 		116C4DE5235611E600D11428 /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		116C4DE8235611E600D11428 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		116C4DEC235611E600D11428 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -75,22 +51,8 @@
 		116C4E06235611E800D11428 /* ExampleUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ExampleUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		116C4E0A235611E800D11428 /* ExampleUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleUITests.swift; sourceTree = "<group>"; };
 		116C4E0C235611E800D11428 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		116C4E1D2356184A00D11428 /* UIView+Helper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Helper.swift"; sourceTree = "<group>"; };
-		116C4E1F2356185800D11428 /* UIImage+Helper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Helper.swift"; sourceTree = "<group>"; };
-		116C4E212356186C00D11428 /* UIImage+Cropping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Cropping.swift"; sourceTree = "<group>"; };
-		116C4E232356187B00D11428 /* HelperExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelperExtensions.swift; sourceTree = "<group>"; };
-		116C4E252356188C00D11428 /* Constans.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constans.swift; sourceTree = "<group>"; };
-		116C4E272356189700D11428 /* CropperState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CropperState.swift; sourceTree = "<group>"; };
-		116C4E29235618A600D11428 /* ScrollViewContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollViewContainer.swift; sourceTree = "<group>"; };
-		116C4E2B235618B500D11428 /* CropperViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CropperViewController.swift; sourceTree = "<group>"; };
-		116C4E2D235618C200D11428 /* Overlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Overlay.swift; sourceTree = "<group>"; };
-		116C4E2F235618C900D11428 /* CropBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CropBox.swift; sourceTree = "<group>"; };
-		116C4E31235618CF00D11428 /* Grid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Grid.swift; sourceTree = "<group>"; };
-		116C4E33235618D900D11428 /* TopBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopBar.swift; sourceTree = "<group>"; };
-		116C4E35235618E000D11428 /* Toolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Toolbar.swift; sourceTree = "<group>"; };
-		116C4E37235618EF00D11428 /* AngleRuler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AngleRuler.swift; sourceTree = "<group>"; };
-		116C4E392356190500D11428 /* AspectRatioPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AspectRatioPicker.swift; sourceTree = "<group>"; };
-		11BD91D3235753E1006FF639 /* AspectRatio.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AspectRatio.swift; sourceTree = "<group>"; };
+		D9BC562663C967EEA86066DB /* Pods_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		DEAAB5F40935BC4686B6F0FA /* Pods-Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Example.release.xcconfig"; path = "Target Support Files/Pods-Example/Pods-Example.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,6 +60,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				54F81FE808832BD67844FE50 /* Pods_Example.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -118,28 +81,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		11526C81235966F800E6F0CA /* CropperProtocols */ = {
-			isa = PBXGroup;
-			children = (
-				11526C8C2359868800E6F0CA /* StateRestorable.swift */,
-				11526C8A23597DB200E6F0CA /* Rotatable.swift */,
-				11526C8E2359887A00E6F0CA /* Flipable.swift */,
-				11526C9023598A2D00E6F0CA /* CropBoxEdgeDraggable.swift */,
-				11526C8823597AAB00E6F0CA /* AspectRatioSettable.swift */,
-				11526C842359671100E6F0CA /* AngleAssist.swift */,
-				11526C86235968AF00E6F0CA /* Stasisable.swift */,
-			);
-			path = CropperProtocols;
-			sourceTree = "<group>";
-		};
 		116C4DDC235611E600D11428 = {
 			isa = PBXGroup;
 			children = (
-				116C4E182356127600D11428 /* QCropper */,
 				116C4DE7235611E600D11428 /* Example */,
 				116C4DFE235611E800D11428 /* ExampleTests */,
 				116C4E09235611E800D11428 /* ExampleUITests */,
 				116C4DE6235611E600D11428 /* Products */,
+				B87D729A84BC09599932C661 /* Pods */,
+				F84AB272AF2EF57BFD4041C6 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -158,6 +108,8 @@
 			children = (
 				116C4DE8235611E600D11428 /* AppDelegate.swift */,
 				116C4DEC235611E600D11428 /* ViewController.swift */,
+				11574BFE2362700A00A9C9E3 /* CustomOverlay.swift */,
+				11574C002362701F00A9C9E3 /* CustomCropperViewController.swift */,
 				116C4DF1235611E800D11428 /* Assets.xcassets */,
 				116C4DF3235611E800D11428 /* LaunchScreen.storyboard */,
 				116C4DF6235611E800D11428 /* Info.plist */,
@@ -183,60 +135,21 @@
 			path = ExampleUITests;
 			sourceTree = "<group>";
 		};
-		116C4E182356127600D11428 /* QCropper */ = {
+		B87D729A84BC09599932C661 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				116C4E192356127600D11428 /* CustomUI */,
-				116C4E1A2356127600D11428 /* Core */,
-				116C4E1B2356127600D11428 /* HelperExtensions */,
-				116C4E1C2356127600D11428 /* Overlay */,
+				07743BD2F40B96862D6DEAE1 /* Pods-Example.debug.xcconfig */,
+				DEAAB5F40935BC4686B6F0FA /* Pods-Example.release.xcconfig */,
 			);
-			path = QCropper;
+			path = Pods;
 			sourceTree = "<group>";
 		};
-		116C4E192356127600D11428 /* CustomUI */ = {
+		F84AB272AF2EF57BFD4041C6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				116C4E33235618D900D11428 /* TopBar.swift */,
-				116C4E35235618E000D11428 /* Toolbar.swift */,
-				116C4E37235618EF00D11428 /* AngleRuler.swift */,
-				116C4E392356190500D11428 /* AspectRatioPicker.swift */,
+				D9BC562663C967EEA86066DB /* Pods_Example.framework */,
 			);
-			path = CustomUI;
-			sourceTree = "<group>";
-		};
-		116C4E1A2356127600D11428 /* Core */ = {
-			isa = PBXGroup;
-			children = (
-				11526C81235966F800E6F0CA /* CropperProtocols */,
-				116C4E252356188C00D11428 /* Constans.swift */,
-				11BD91D3235753E1006FF639 /* AspectRatio.swift */,
-				116C4E272356189700D11428 /* CropperState.swift */,
-				116C4E29235618A600D11428 /* ScrollViewContainer.swift */,
-				116C4E2B235618B500D11428 /* CropperViewController.swift */,
-			);
-			path = Core;
-			sourceTree = "<group>";
-		};
-		116C4E1B2356127600D11428 /* HelperExtensions */ = {
-			isa = PBXGroup;
-			children = (
-				116C4E1D2356184A00D11428 /* UIView+Helper.swift */,
-				116C4E1F2356185800D11428 /* UIImage+Helper.swift */,
-				116C4E212356186C00D11428 /* UIImage+Cropping.swift */,
-				116C4E232356187B00D11428 /* HelperExtensions.swift */,
-			);
-			path = HelperExtensions;
-			sourceTree = "<group>";
-		};
-		116C4E1C2356127600D11428 /* Overlay */ = {
-			isa = PBXGroup;
-			children = (
-				116C4E2D235618C200D11428 /* Overlay.swift */,
-				116C4E2F235618C900D11428 /* CropBox.swift */,
-				116C4E31235618CF00D11428 /* Grid.swift */,
-			);
-			path = Overlay;
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -246,9 +159,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 116C4E0F235611E800D11428 /* Build configuration list for PBXNativeTarget "Example" */;
 			buildPhases = (
+				729390DE3CF0CD591E267BB4 /* [CP] Check Pods Manifest.lock */,
 				116C4DE1235611E600D11428 /* Sources */,
 				116C4DE2235611E600D11428 /* Frameworks */,
 				116C4DE3235611E600D11428 /* Resources */,
+				70E353EF1D2F1018D90FB0CF /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -364,36 +279,57 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		70E353EF1D2F1018D90FB0CF /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Example/Pods-Example-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Example/Pods-Example-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Example/Pods-Example-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		729390DE3CF0CD591E267BB4 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Example-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		116C4DE1235611E600D11428 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				116C4E222356186C00D11428 /* UIImage+Cropping.swift in Sources */,
-				116C4E282356189700D11428 /* CropperState.swift in Sources */,
-				116C4E242356187B00D11428 /* HelperExtensions.swift in Sources */,
-				11526C8923597AAC00E6F0CA /* AspectRatioSettable.swift in Sources */,
 				116C4DED235611E600D11428 /* ViewController.swift in Sources */,
-				116C4E2C235618B500D11428 /* CropperViewController.swift in Sources */,
-				11BD91D4235753E1006FF639 /* AspectRatio.swift in Sources */,
-				116C4E1E2356184A00D11428 /* UIView+Helper.swift in Sources */,
 				116C4DE9235611E600D11428 /* AppDelegate.swift in Sources */,
-				11526C8F2359887A00E6F0CA /* Flipable.swift in Sources */,
-				116C4E34235618D900D11428 /* TopBar.swift in Sources */,
-				116C4E32235618CF00D11428 /* Grid.swift in Sources */,
-				116C4E2E235618C200D11428 /* Overlay.swift in Sources */,
-				116C4E262356188C00D11428 /* Constans.swift in Sources */,
-				116C4E3A2356190500D11428 /* AspectRatioPicker.swift in Sources */,
-				11526C87235968AF00E6F0CA /* Stasisable.swift in Sources */,
-				116C4E30235618C900D11428 /* CropBox.swift in Sources */,
-				116C4E38235618EF00D11428 /* AngleRuler.swift in Sources */,
-				11526C9123598A2D00E6F0CA /* CropBoxEdgeDraggable.swift in Sources */,
-				116C4E36235618E000D11428 /* Toolbar.swift in Sources */,
-				11526C8B23597DB200E6F0CA /* Rotatable.swift in Sources */,
-				11526C8D2359868900E6F0CA /* StateRestorable.swift in Sources */,
-				116C4E202356185800D11428 /* UIImage+Helper.swift in Sources */,
-				11526C852359671100E6F0CA /* AngleAssist.swift in Sources */,
-				116C4E2A235618A600D11428 /* ScrollViewContainer.swift in Sources */,
+				11574BFF2362700A00A9C9E3 /* CustomOverlay.swift in Sources */,
+				11574C012362701F00A9C9E3 /* CustomCropperViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -556,6 +492,7 @@
 		};
 		116C4E10235611E800D11428 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 07743BD2F40B96862D6DEAE1 /* Pods-Example.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
@@ -574,6 +511,7 @@
 		};
 		116C4E11235611E800D11428 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = DEAAB5F40935BC4686B6F0FA /* Pods-Example.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;

@@ -1,0 +1,16 @@
+PODS:
+  - QCropper (0.1.0)
+
+DEPENDENCIES:
+  - QCropper (from `./`)
+
+EXTERNAL SOURCES:
+  QCropper:
+    :path: "./"
+
+SPEC CHECKSUMS:
+  QCropper: ca25c2c974852bba8ebeb7e7b94c44b7a34fe48a
+
+PODFILE CHECKSUM: 9a4471deb80305aed8c8c7987a935154408d0723
+
+COCOAPODS: 1.8.0

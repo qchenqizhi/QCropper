@@ -5,6 +5,7 @@
 //
 
 import UIKit
+import QCropper
 
 class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 
@@ -12,21 +13,21 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     var cropperState: CropperState?
 
     lazy var startButton: UIButton = {
-        let button = UIButton(frame: CGRect(x: 0, y: view.height - 200, width: view.width, height: 40))
+        let button = UIButton(frame: CGRect(x: 0, y: view.frame.size.height - 200, width: view.frame.size.width, height: 40))
         button.addTarget(self, action: #selector(startButtonPressed(_:)), for: .touchUpInside)
         button.setTitle("Start", for: .normal)
         return button
     }()
 
     lazy var reeditButton: UIButton = {
-        let button = UIButton(frame: CGRect(x: 0, y: view.height - 160, width: view.width, height: 40))
+        let button = UIButton(frame: CGRect(x: 0, y: view.frame.size.height - 160, width: view.frame.size.width, height: 40))
         button.addTarget(self, action: #selector(reeditButtonPressed(_:)), for: .touchUpInside)
         button.setTitle("Re-edit", for: .normal)
         return button
     }()
 
     lazy var imageView: UIImageView = {
-        let iv = UIImageView(frame: CGRect(x: 0, y: 100, width: view.width, height: view.width))
+        let iv = UIImageView(frame: CGRect(x: 0, y: 100, width: view.frame.size.width, height: view.frame.size.width))
         iv.layer.borderColor = UIColor.white.cgColor
         iv.layer.borderWidth = 1
         iv.contentMode = .scaleAspectFit
@@ -66,6 +67,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         originalImage = image
 
         let cropper = CropperViewController(originalImage: image)
+
         cropper.delegate = self
 
         picker.dismiss(animated: true) {
