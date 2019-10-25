@@ -406,8 +406,8 @@ open class CropperViewController: UIViewController, Rotatable, StateRestorable, 
         aspectRatioPicker.frame = angleRuler.frame
 
         let topHeight = topBar.isHidden ? view.safeAreaInsets.top : topBar.height
-        // TODO: toolbar can be hidden too
-        let bottomHeight = (angleRuler.isHidden && aspectRatioPicker.isHidden) ? toolbar.height : bottomView.height
+        let toolbarHeight = toolbar.isHidden ? view.safeAreaInsets.bottom : toolbar.height
+        let bottomHeight = (angleRuler.isHidden && aspectRatioPicker.isHidden) ? toolbarHeight : bottomView.height
         cropRegionInsets = UIEdgeInsets(top: margin + topHeight,
                                         left: margin + view.safeAreaInsets.left,
                                         bottom: margin + bottomHeight,

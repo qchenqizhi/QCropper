@@ -34,7 +34,6 @@ open class Overlay: UIView {
         }
     }
 
-    // TODO:
     public var isCircular: Bool = false
 
     public var blur: Bool = true {
