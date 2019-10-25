@@ -7,7 +7,7 @@
 import UIKit
 
 /// Will send 2 actions: valueChanged and editingDidEnd
-class AngleRuler: UIControl {
+public class AngleRuler: UIControl {
     /// Should be an integer multiple of numberOfGroupedScales
     var numberOfTotalScales: Int = 40
     var numberOfGroupedScales: Int = 10
@@ -184,7 +184,7 @@ class AngleRuler: UIControl {
         setValue(0, sendEvent: false)
     }
 
-    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+    public override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
         let view = super.hitTest(point, with: event)
 
         if view == self {
@@ -214,7 +214,7 @@ class AngleRuler: UIControl {
 }
 
 extension AngleRuler: UIScrollViewDelegate {
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         var value = scrollView.contentOffset.x * (maximumValue - minimumValue) / (CGFloat(numberOfTotalScales) * scaleSpacing) + minimumValue
         if value < minimumValue {
             value = minimumValue
@@ -228,17 +228,17 @@ extension AngleRuler: UIScrollViewDelegate {
         sendActions(for: .valueChanged)
     }
 
-    func scrollViewDidEndDragging(_: UIScrollView, willDecelerate decelerate: Bool) {
+    public func scrollViewDidEndDragging(_: UIScrollView, willDecelerate decelerate: Bool) {
         if !decelerate {
             scrollEnded()
         }
     }
 
-    func scrollViewDidEndDecelerating(_: UIScrollView) {
+    public func scrollViewDidEndDecelerating(_: UIScrollView) {
         scrollEnded()
     }
 
-    func scrollViewDidEndScrollingAnimation(_: UIScrollView) {
+    public func scrollViewDidEndScrollingAnimation(_: UIScrollView) {
         scrollEnded()
     }
 }

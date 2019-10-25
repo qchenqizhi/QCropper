@@ -66,6 +66,10 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
 
         originalImage = image
 
+        // Custom
+        // let cropper = CustomCropperViewController(originalImage: image)
+        // Circular
+        // let cropper = CropperViewController(originalImage: image, isCircular: true)
         let cropper = CropperViewController(originalImage: image)
 
         cropper.delegate = self

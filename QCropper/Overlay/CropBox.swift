@@ -7,7 +7,7 @@
 import UIKit
 
 // extension Overlay {
-class CropBox: UIView {
+open class CropBox: UIView {
 
     var gridLinesAlpha: CGFloat = 0 {
         didSet {
@@ -41,11 +41,11 @@ class CropBox: UIView {
         setupCorners()
     }
 
-    required init?(coder aDecoder: NSCoder) {
+    public required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
 
-    override func layoutSubviews() {
+    public override func layoutSubviews() {
         super.layoutSubviews()
 
         gridLinesView.frame = bounds
