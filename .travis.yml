@@ -1,0 +1,14 @@
+language: swift
+osx_image: xcode11.1
+
+env:
+- DESTINATION='platform=iOS Simulator,name=iPhone 8'
+- PROJECT_NAME='Example'
+
+script:
+  - xcodebuild clean -workspace "$PROJECT_NAME.xcworkspace" -scheme "$PROJECT_NAME" | xcpretty
+  - xcodebuild -workspace "$PROJECT_NAME.xcworkspace" -scheme "$PROJECT_NAME" -destination "$DESTINATION" | xcpretty -s
+
+branches:
+  only:
+    - master

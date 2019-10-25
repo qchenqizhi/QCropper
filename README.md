@@ -1,6 +1,6 @@
 # QCropper
 
-[![CI Status](https://img.shields.io/travis/chenqizhi/QCropper.svg?style=flat)](https://travis-ci.org/chenqizhi/QCropper)
+[![CI Status](https://img.shields.io/travis/qchenqizhi/QCropper.svg?style=flat)](https://travis-ci.org/qchenqizhi/QCropper)
 [![Version](https://img.shields.io/cocoapods/v/QCropper.svg?style=flat)](https://cocoapods.org/pods/QCropper)
 [![License](https://img.shields.io/cocoapods/l/QCropper.svg?style=flat)](https://cocoapods.org/pods/QCropper)
 [![Platform](https://img.shields.io/cocoapods/p/QCropper.svg?style=flat)](https://cocoapods.org/pods/QCropper)
