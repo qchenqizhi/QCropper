@@ -8,21 +8,21 @@ import UIKit
 
 class TopBar: UIView {
     lazy var flipButton: UIButton = {
-        let button = self.iconButton(iconName: "flip.horizontal.fill")
+        let button = self.iconButton(iconName: "QCropper.flip.horizontal.fill")
         button.left = 0
         button.autoresizingMask = [.flexibleTopMargin, .flexibleRightMargin]
         return button
     }()
 
     lazy var rotateButton: UIButton = {
-        let button = self.iconButton(iconName: "rotate.right.fill")
+        let button = self.iconButton(iconName: "QCropper.rotate.right.fill")
         button.left = self.flipButton.right
         button.autoresizingMask = [.flexibleTopMargin, .flexibleRightMargin]
         return button
     }()
 
     lazy var aspectRationButton: UIButton = {
-        let button = self.iconButton(iconName: "aspectratio.fill")
+        let button = self.iconButton(iconName: "QCropper.aspectratio.fill")
         button.right = self.width
         button.autoresizingMask = [.flexibleTopMargin, .flexibleLeftMargin]
         return button
@@ -52,14 +52,32 @@ class TopBar: UIView {
     }
 
     func iconButton(iconName: String) -> UIButton {
-        let button = UIButton(frame: CGRect(center: .zero, size: CGSize(width: 44, height: 44)))
-        button.setImage(UIImage(systemNameOrColorIfNotAvailable: iconName), for: .normal)
-        if #available(iOS 13.0, *) {
-            let image = UIImage(systemNameOrColorIfNotAvailable: iconName)?.withTintColor(highlightColor, renderingMode: .alwaysOriginal)
-            button.setImage(image, for: .selected)
-        }
-        button.tintColor = UIColor(white: 0.725, alpha: 1)
+        let button = IconButton(iconName)
         button.bottom = height
         return button
+    }
+}
+
+class IconButton: UIButton {
+    init(_ iconName: String) {
+        super.init(frame: CGRect(center: .zero, size: CGSize(width: 44, height: 44)))
+
+        let image = UIImage(named: iconName, in: resourceBundle, compatibleWith: nil)?.withRenderingMode(.alwaysTemplate)
+        setImage(image, for: .normal)
+        tintColor = UIColor(white: 0.725, alpha: 1)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override var isSelected: Bool {
+        didSet {
+            if isSelected {
+                tintColor = highlightColor
+            } else {
+                tintColor = UIColor(white: 0.725, alpha: 1)
+            }
+        }
     }
 }

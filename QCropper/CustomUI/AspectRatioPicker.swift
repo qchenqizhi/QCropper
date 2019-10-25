@@ -16,7 +16,7 @@ protocol AspectRatioPickerDelegate: class {
     func aspectRatioPickerDidSelectedAspectRatio(_ aspectRatio: AspectRatio)
 }
 
-class AspectRatioPicker: UIView {
+public class AspectRatioPicker: UIView {
 
     weak var delegate: AspectRatioPickerDelegate?
 
@@ -74,7 +74,7 @@ class AspectRatioPicker: UIView {
         addSubview(verticalButton)
     }
 
-    required init?(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
 
@@ -207,13 +207,8 @@ class AspectRatioPicker: UIView {
                                          size: CGSize(width: 10, height: 10))
         let selectedBackgroundImage = selectedColorImage.resizableImage(withCapInsets: UIEdgeInsets(top: 3, left: 3, bottom: 3, right: 3))
 
-        let checkmark: UIImage
-        if #available(iOS 13.0, *) {
-            checkmark = UIImage(systemName: "checkmark", withConfiguration: UIImage.SymbolConfiguration(pointSize: 16, weight: .light)) ?? UIImage()
-        } else {
-            // TODO: png resource
-            checkmark = UIImage(color: .white, size: CGSize(width: 20, height: 20))
-        }
+        /// ??? "QCropper.checkmark" not work
+        let checkmark = UIImage(named: "QCropper.check.mark", in: resourceBundle, compatibleWith: nil)?.withRenderingMode(.alwaysTemplate)
 
         button.tintColor = .black
         button.layer.borderColor = UIColor(white: 0.56, alpha: 1).cgColor
