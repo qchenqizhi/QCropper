@@ -61,6 +61,7 @@ open class CropperViewController: UIViewController, Rotatable, StateRestorable, 
 
     public var currentAspectRatioValue: CGFloat = 1.0
     public var isCropBoxPanEnabled: Bool = true
+    public var cropContentInset: UIEdgeInsets = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
 
     let cropBoxHotArea: CGFloat = 50
     let cropBoxMinSize: CGFloat = 20
@@ -408,10 +409,10 @@ open class CropperViewController: UIViewController, Rotatable, StateRestorable, 
         let topHeight = topBar.isHidden ? view.safeAreaInsets.top : topBar.height
         let toolbarHeight = toolbar.isHidden ? view.safeAreaInsets.bottom : toolbar.height
         let bottomHeight = (angleRuler.isHidden && aspectRatioPicker.isHidden) ? toolbarHeight : bottomView.height
-        cropRegionInsets = UIEdgeInsets(top: margin + topHeight,
-                                        left: margin + view.safeAreaInsets.left,
-                                        bottom: margin + bottomHeight,
-                                        right: margin + view.safeAreaInsets.right)
+        cropRegionInsets = UIEdgeInsets(top: cropContentInset.top + topHeight,
+                                        left: cropContentInset.left + view.safeAreaInsets.left,
+                                        bottom: cropContentInset.bottom + bottomHeight,
+                                        right: cropContentInset.right + view.safeAreaInsets.right)
 
         maxCropRegion = CGRect(x: cropRegionInsets.left,
                                y: cropRegionInsets.top,
