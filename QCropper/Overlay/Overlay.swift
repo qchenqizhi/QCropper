@@ -36,9 +36,11 @@ open class Overlay: UIView {
 
     public var isCircular: Bool = false
 
+    public var isBlurEnabled: Bool = true
+
     public var blur: Bool = true {
         didSet {
-            if blur {
+            if blur, isBlurEnabled {
                 translucentMaskView.effect = UIBlurEffect(style: .dark)
                 translucentMaskView.backgroundColor = .clear
             } else {
@@ -51,7 +53,7 @@ open class Overlay: UIView {
     // Take effect when blur = false
     public var maskColor: UIColor = UIColor(white: 0.1, alpha: 0.3) {
         didSet {
-            if !blur {
+            if !blur || !isBlurEnabled {
                 translucentMaskView.backgroundColor = maskColor
             }
         }
