@@ -84,7 +84,7 @@ extension UIImage {
                                     bitsPerComponent: 8,
                                     bytesPerRow: 0,
                                     space: colorSpace,
-                                    bitmapInfo: CGImageAlphaInfo.noneSkipFirst.rawValue) else {
+                                    bitmapInfo: source.bitmapInfo.rawValue) else {
             return nil
         }
         var srcSize = size
@@ -105,6 +105,7 @@ extension UIImage {
             break
         }
 
+        context.clear(CGRect(x: 0, y: 0, width: size.width, height: size.height))
         context.interpolationQuality = quality
         context.translateBy(x: size.width / 2, y: size.height / 2)
         context.rotate(by: rotation)
@@ -146,8 +147,7 @@ extension UIImage {
             return nil
         }
 
-        context.setFillColor(UIColor.black.cgColor)
-        context.fill(CGRect(x: 0, y: 0, width: outputSize.width, height: outputSize.height))
+        context.clear(CGRect(x: 0, y: 0, width: outputSize.width, height: outputSize.height))
         context.setShouldAntialias(false)
         context.interpolationQuality = CGInterpolationQuality.none
 
