@@ -258,7 +258,7 @@ open class CropperViewController: UIViewController, Rotatable, StateRestorable, 
         view.addSubview(topBar)
     }
 
-    public override func viewDidLayoutSubviews() {
+    open override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
         // Layout when self.view finish layout and never layout before, or self.view need reload
@@ -280,19 +280,19 @@ open class CropperViewController: UIViewController, Rotatable, StateRestorable, 
         }
     }
 
-    public override var prefersStatusBarHidden: Bool {
+    open override var prefersStatusBarHidden: Bool {
         return true
     }
 
-    public override var preferredStatusBarStyle: UIStatusBarStyle {
+    open override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
 
-    public override var preferredScreenEdgesDeferringSystemGestures: UIRectEdge {
+    open override var preferredScreenEdgesDeferringSystemGestures: UIRectEdge {
         return .top
     }
 
-    public override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+    open override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         if !view.size.isEqual(to: size, accuracy: 0.0001) {
             needReload = true
         }
