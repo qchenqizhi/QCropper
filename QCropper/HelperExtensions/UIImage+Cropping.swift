@@ -75,18 +75,35 @@ extension UIImage {
         return maxWidth
     }
 
-    private class func newScaledImage(_ source: CGImage?, with orientation: UIImage.Orientation, to size: CGSize, with quality: CGInterpolationQuality) -> CGImage? {
-        guard let source = source,
-            let colorSpace = source.colorSpace,
-            let context = CGContext(data: nil,
-                                    width: Int(size.width),
-                                    height: Int(size.height),
-                                    bitsPerComponent: 8,
-                                    bytesPerRow: 0,
-                                    space: colorSpace,
-                                    bitmapInfo: source.bitmapInfo.rawValue) else {
-            return nil
+    private class func bitmapInfoForRedraw(_ sourceAlphaInfo: CGImageAlphaInfo) -> UInt32 {
+        var targetAlphaInfo: CGImageAlphaInfo = sourceAlphaInfo
+
+        if sourceAlphaInfo == .none || sourceAlphaInfo == .alphaOnly {
+            targetAlphaInfo = .noneSkipFirst
+        } else if sourceAlphaInfo == .first {
+            targetAlphaInfo = .premultipliedFirst
+        } else if sourceAlphaInfo == .last {
+            targetAlphaInfo = .premultipliedLast
         }
+
+        // should be targetAlphaInfo + kCGBitmapByteOrderDefault(== 0)
+        return targetAlphaInfo.rawValue
+    }
+
+    private class func newScaledImage(_ originalSource: CGImage?, with orientation: UIImage.Orientation, to size: CGSize, with quality: CGInterpolationQuality) -> CGImage? {
+        guard let source = originalSource,
+              let colorSpace = source.colorSpace,
+              let context = CGContext(data: nil,
+                                      width: Int(size.width),
+                                      height: Int(size.height),
+                                      bitsPerComponent: 8,
+                                      bytesPerRow: 0,
+                                      space: colorSpace,
+                                      bitmapInfo: Self.bitmapInfoForRedraw(source.alphaInfo))
+        else {
+            return originalSource
+        }
+
         var srcSize = size
         var rotation: CGFloat = 0.0
 
@@ -140,11 +157,11 @@ extension UIImage {
             let context = CGContext(data: nil,
                                     width: Int(outputSize.width),
                                     height: Int(outputSize.height),
-                                    bitsPerComponent: source.bitsPerComponent,
+                                    bitsPerComponent: 8,
                                     bytesPerRow: 0,
                                     space: colorSpace,
-                                    bitmapInfo: source.bitmapInfo.rawValue) else {
-            return nil
+                                    bitmapInfo: Self.bitmapInfoForRedraw(source.alphaInfo)) else {
+            return sourceScaled
         }
 
         context.clear(CGRect(x: 0, y: 0, width: outputSize.width, height: outputSize.height))
