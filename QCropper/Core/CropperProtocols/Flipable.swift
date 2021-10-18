@@ -31,5 +31,6 @@ extension Flipable where Self: CropperViewController {
         imageView.image = image?.withOrientation(fliped ? .up : .upMirrored)
 
         scrollView.transform = CGAffineTransform(rotationAngle: totalAngle)
+        updateButtons()
     }
 }
