@@ -441,6 +441,7 @@ open class CropperViewController: UIViewController, Rotatable, StateRestorable, 
         scrollView.center = backgroundView.convert(defaultCropBoxCenter, to: scrollViewContainer)
         imageView.transform = .identity
         imageView.frame = scrollView.bounds
+        imageView.image = originalImage
         overlay.frame = backgroundView.bounds
         overlay.cropBoxFrame = CGRect(center: defaultCropBoxCenter, size: defaultCropBoxSize)
 
