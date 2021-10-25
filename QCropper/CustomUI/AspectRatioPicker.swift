@@ -12,7 +12,7 @@ enum Box {
     case horizontal
 }
 
-protocol AspectRatioPickerDelegate: class {
+protocol AspectRatioPickerDelegate: AnyObject {
     func aspectRatioPickerDidSelectedAspectRatio(_ aspectRatio: AspectRatio)
 }
 
@@ -208,7 +208,7 @@ public class AspectRatioPicker: UIView {
         let selectedBackgroundImage = selectedColorImage.resizableImage(withCapInsets: UIEdgeInsets(top: 3, left: 3, bottom: 3, right: 3))
 
         /// ??? "QCropper.checkmark" not work
-        let checkmark = UIImage(named: "QCropper.check.mark", in: resourceBundle, compatibleWith: nil)?.withRenderingMode(.alwaysTemplate)
+        let checkmark = UIImage(named: "QCropper.check.mark", in: QCropper.Config.resourceBundle, compatibleWith: nil)?.withRenderingMode(.alwaysTemplate)
 
         button.tintColor = .black
         button.layer.borderColor = UIColor(white: 0.56, alpha: 1).cgColor

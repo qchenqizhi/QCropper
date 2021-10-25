@@ -8,7 +8,7 @@ import UIKit
 
 // MARK: Stasis
 
-protocol Stasisable: class {
+protocol Stasisable: AnyObject {
     var stasisTimer: Timer? { get set }
     var stasisThings: (() -> Void)? { get set }
 

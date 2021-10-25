@@ -18,7 +18,7 @@ enum CropBoxEdge: Int {
     case bottomLeft
 }
 
-public protocol CropperViewControllerDelegate: class {
+public protocol CropperViewControllerDelegate: AnyObject {
     func cropperDidConfirm(_ cropper: CropperViewController, state: CropperState?)
     func cropperDidCancel(_ cropper: CropperViewController)
 }
@@ -555,7 +555,7 @@ open class CropperViewController: UIViewController, Rotatable, StateRestorable, 
 
             var zoomScale = scale * self.scrollView.zoomScale * extraZoomScale
             let scrollViewZoomScaleToBounds = self.scrollViewZoomScaleToBounds()
-            if zoomScale < scrollViewZoomScaleToBounds { // Some are not image in the cropbox area
+            if zoomScale < scrollViewZoomScaleToBounds { // Some area not fill image in the cropbox area
                 zoomScale = scrollViewZoomScaleToBounds
             }
             if zoomScale > self.scrollView.maximumZoomScale { // Only rotate can make maximumZoomScale to get bigger

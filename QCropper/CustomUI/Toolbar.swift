@@ -59,8 +59,8 @@ class Toolbar: UIView {
         let button = UIButton(frame: CGRect(center: .zero,
                                             size: CGSize(width: title.width(withFont: font) + 20, height: 44)))
         if highlight {
-            button.setTitleColor(highlightColor, for: .normal)
-            button.setTitleColor(highlightColor.withAlphaComponent(0.7), for: .highlighted)
+            button.setTitleColor(QCropper.Config.highlightColor, for: .normal)
+            button.setTitleColor(QCropper.Config.highlightColor.withAlphaComponent(0.7), for: .highlighted)
         } else {
             button.setTitleColor(UIColor(white: 1, alpha: 1.0), for: .normal)
             button.setTitleColor(UIColor(white: 1, alpha: 0.7), for: .highlighted)
