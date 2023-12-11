@@ -13,7 +13,7 @@ I wrote the Objective-C version of QCropper for my company a few years ago, base
 <img src="preview.gif" width="800" height="680">
 
 #### Customization
-<img src="preview.jpg" width="937" height="672">
+<img src="preview.jpg" width="800" height="574">
 
 ## Features
 - Image cropping
